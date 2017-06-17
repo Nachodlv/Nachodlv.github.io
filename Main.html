@@ -23,15 +23,15 @@
                 var material = new THREE.MeshLambertMaterial( {
                     color: 0x00ff00} );
                 var cube = new THREE.Mesh( geometry, material );
-                cube.position.set(0,0,0-500);
+                cube.position.set(0,0,-500);
                 cube.castShadow=true;
                 cube.receiveShadow=true;
                 //scene.add( cube );
 
                 var spheres=[];
                 for(var i=0;i<5;i++){
-                    spheres.push(newPlanet(Math.random()*200,Math.random()*200,Math.random()*50));
-                    scene.add(spheres[i]);
+                    spheres.push(new Planet(Math.random()*50,Math.random()*50,Math.random()*200,Math.random()*200));
+                    scene.add(spheres[i].sphere);
                 }
 
                 /*var terrain = new THREE.Mesh(new THREE.CubeGeometry(1000,1,1000),new THREE.MeshLambertMaterial({color: 0x00ff00}));
@@ -67,11 +67,19 @@
                     camera.position.x=Math.sin(delta)*500;
                     camera.position.z = Math.cos(delta)*500;
                     requestAnimationFrame( render );*/
-                    spheres[0].position.x+=1;
-                    spheres[0].position.y+=1;
+                    spheres[0].sphere.position.x+=1;
+                    spheres[0].sphere.position.y+=1;
+                    spheres[1].sphere.position.x+=1;
+                    spheres[1].sphere.position.y+=1;
+                    spheres[2].sphere.position.x+=1;
+                    spheres[2].sphere.position.y+=1;
+                    spheres[3].sphere.position.x+=1;
+                    spheres[3].sphere.position.y+=1;
+                    spheres[4].sphere.position.x+=1;
+                    spheres[4].sphere.position.y+=1;
                     for(var i=0;i<spheres.lenght;i++) {
-                        spheres[i].position.x += 1;
-                        spheres[i].position.y += 1;
+                        spheres[i].sphere.position.x += 1;
+                        spheres[i].sphere.position.y += 1;
                     }
                     requestAnimationFrame(render);
                     renderer.render(scene, camera);
