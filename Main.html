@@ -30,11 +30,12 @@
 
                 var spheres=[];
 
-                spheres.push(new Planet(100,30,0,0));
+                spheres.push(new Planet(100,30,0,0)); //down to 10 from 100
                 spheres.push(new Planet(20,5,350,0));
+                spheres.push(new Planet(20, 5, -200, 0));
 
-                for(var i=0;i<2;i++){
-                    spheres.push(new Planet(Math.random()*50,Math.random()*50,Math.random()*200,Math.random()*200));
+                for(var i=0;i<3;i++){
+                    //spheres.push(new Planet(Math.random()*50,Math.random()*50,Math.random()*200,Math.random()*200));
                     scene.add(spheres[i].sphere);
                 }
                 /*var terrain = new THREE.Mesh(new THREE.CubeGeometry(1000,1,1000),new THREE.MeshLambertMaterial({color: 0x00ff00}));
@@ -71,8 +72,8 @@
                     camera.position.z = Math.cos(delta)*500;
                     requestAnimationFrame( render );*/
                     //delta+=0.01; // 0.01
-                    var distance = Math.sqrt(Math.pow(spheres[1].sphere.position.x-spheres[0].sphere.position.x, 2) + Math.pow(spheres[1].sphere.position.y-spheres[0].sphere.position.y, 2));
-                    delta += Math.pow(distance / 10, -1);
+                    //var distance = Math.sqrt(Math.pow(spheres[1].sphere.position.x-spheres[0].sphere.position.x, 2) + Math.pow(spheres[1].sphere.position.y-spheres[0].sphere.position.y, 2));
+                    //delta += Math.pow(distance / 10, -1);
                     /*
                     spheres[1].sphere.position.x = (delta/10) * Math.cos(delta)*150;
                     spheres[1].sphere.position.y = (delta/10) * Math.sin(delta)*150;
@@ -89,6 +90,8 @@
                     spheres[0].velocity = [0, 0, 0];
                     spheres[1].applyGravity(spheres[0]);
                     spheres[1].update(spheres[0]);
+                    spheres[2].applyGravity(spheres[0]);
+                    spheres[2].update(spheres[0]);
 
                     /*
                     spheres[2].sphere.position.x+=1;

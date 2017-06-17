@@ -15,7 +15,7 @@ function Planet(mass, radius, xPosition, yPosition){
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
     this.update = update;
-    this.velocity = [1, -1, 0]; //we have to tweak this values
+    this.velocity = [0, 2.5, 0]; //we have to tweak this values
 }
 
 function update(){
