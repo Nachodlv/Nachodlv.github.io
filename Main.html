@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My first three.js app</title>
+</head>
+    <body>
+        <script src="js/build/three.js"></script>
+        <script src="js/src/geometries/ShapeGeometry.js"></script>
+        <script src="js/src/geometries/TextGeometry.js"></script>
+        <script src="js/examples/js/shaders/UnpackDepthRGBAShader.js"></script>
+        <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
+        <script src="Planet.js"></script>
+            <script>
+                var scene = new THREE.Scene();
+                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                document.body.appendChild( renderer.domElement );
+
+                var geometry = new THREE.CubeGeometry(100,100,100);
+                var material = new THREE.MeshLambertMaterial( {
+                    color: 0x00ff00} );
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.set(0,0,0-500);
+                cube.castShadow=true;
+                cube.receiveShadow=true;
+                //scene.add( cube );
+
+                var spheres=[];
+                for(var i=0;i<5;i++){
+                    spheres.push(newPlanet(Math.random()*200,Math.random()*200,Math.random()*50));
+                    scene.add(spheres[i]);
+                }
+
+                /*var terrain = new THREE.Mesh(new THREE.CubeGeometry(1000,1,1000),new THREE.MeshLambertMaterial({color: 0x00ff00}));
+                terrain.position.set(0,-70,-500);
+                terrain.castShadow=true;
+                terrain.receiveShadow=true;
+                scene.add(terrain);*/
+
+                var light = new THREE.AmbientLight(0xffffff,0.5);
+                scene.add(light);
+                var light2 = new THREE.PointLight(0xffffff,0.5);
+                //var light2 = new THREE.SpotLight(0xffffff,0.5,3000);
+                light2.target=cube;
+                renderer.shadowMap.enabled=true;
+                renderer.shadowMap.type = THREE.PCFShadowMap;
+                light2.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100,1,500,1000));
+                light2.shadow.bias=0.0001;
+                light2.shadow.mapSize.width=2048*2;
+                light2.shadow.mapSize.height=2048*2;
+                scene.add(light2);
+
+                var shadowMapViewer = new THREE.ShadowMapViewer(light2);
+                shadowMapViewer.position.x=10;
+                shadowMapViewer.position.y=10;
+                shadowMapViewer.size.width=2048/10;
+                shadowMapViewer.size.height=2048/10;
+                shadowMapViewer.update();
+
+                var delta =0;
+                var render = function () {
+                   /* delta+=0.01;
+                    camera.lookAt(light.position);
+                    camera.position.x=Math.sin(delta)*500;
+                    camera.position.z = Math.cos(delta)*500;
+                    requestAnimationFrame( render );*/
+                    spheres[0].position.x+=1;
+                    spheres[0].position.y+=1;
+                    for(var i=0;i<spheres.lenght;i++) {
+                        spheres[i].position.x += 1;
+                        spheres[i].position.y += 1;
+                    }
+                    requestAnimationFrame(render);
+                    renderer.render(scene, camera);
+                    shadowMapViewer.render(renderer);
+                };
+
+                render();
+            </script>
+    </body>
+</html>
