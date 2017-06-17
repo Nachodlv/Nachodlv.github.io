@@ -29,11 +29,14 @@
                 //scene.add( cube );
 
                 var spheres=[];
-                for(var i=0;i<5;i++){
+
+                spheres.push(new Planet(100,30,0,0));
+                spheres.push(new Planet(20,5,350,0));
+
+                for(var i=0;i<2;i++){
                     spheres.push(new Planet(Math.random()*50,Math.random()*50,Math.random()*200,Math.random()*200));
                     scene.add(spheres[i].sphere);
                 }
-
                 /*var terrain = new THREE.Mesh(new THREE.CubeGeometry(1000,1,1000),new THREE.MeshLambertMaterial({color: 0x00ff00}));
                 terrain.position.set(0,-70,-500);
                 terrain.castShadow=true;
@@ -67,10 +70,27 @@
                     camera.position.x=Math.sin(delta)*500;
                     camera.position.z = Math.cos(delta)*500;
                     requestAnimationFrame( render );*/
-                    spheres[0].sphere.position.x+=1;
-                    spheres[0].sphere.position.y+=1;
-                    spheres[1].sphere.position.x+=1;
-                    spheres[1].sphere.position.y+=1;
+                    //delta+=0.01; // 0.01
+                    var distance = Math.sqrt(Math.pow(spheres[1].sphere.position.x-spheres[0].sphere.position.x, 2) + Math.pow(spheres[1].sphere.position.y-spheres[0].sphere.position.y, 2));
+                    delta += Math.pow(distance / 10, -1);
+                    /*
+                    spheres[1].sphere.position.x = (delta/10) * Math.cos(delta)*150;
+                    spheres[1].sphere.position.y = (delta/10) * Math.sin(delta)*150;
+                    spheres[0].sphere.position.x = 0;
+                    spheres[0].sphere.position.y = 0;
+                    */
+                    /*
+                    spheres[1].sphere.position.x = 450 * Math.cos(delta);
+                    spheres[1].sphere.position.y = 150 * Math.sin(delta);
+                    */
+
+                    spheres[0].sphere.position.x = 0;
+                    spheres[0].sphere.position.y = 0;
+                    spheres[0].velocity = [0, 0, 0];
+                    spheres[1].applyGravity(spheres[0]);
+                    spheres[1].update(spheres[0]);
+
+                    /*
                     spheres[2].sphere.position.x+=1;
                     spheres[2].sphere.position.y+=1;
                     spheres[3].sphere.position.x+=1;
@@ -81,6 +101,7 @@
                         spheres[i].sphere.position.x += 1;
                         spheres[i].sphere.position.y += 1;
                     }
+                    */
                     requestAnimationFrame(render);
                     renderer.render(scene, camera);
                     shadowMapViewer.render(renderer);
