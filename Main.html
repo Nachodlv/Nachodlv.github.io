@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My first three.js app</title>
+    <title>The simulator of life</title>
 </head>
     <body>
         <script src="js/build/three.js"></script>
@@ -13,56 +13,68 @@
         <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
         <script src="Planet.js"></script>
             <script>
+                //CAMERA, RENDERER AND SCENE
                 var scene = new THREE.Scene();
-                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 3000 );
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 document.body.appendChild( renderer.domElement );
+                camera.position.set(0,0,1700);
 
-                var geometry = new THREE.CubeGeometry(100,100,100);
-                var material = new THREE.MeshLambertMaterial( {
-                    color: 0x00ff00} );
-                var cube = new THREE.Mesh( geometry, material );
-                cube.position.set(0,0,-500);
-                cube.castShadow=true;
-                cube.receiveShadow=true;
-                //scene.add( cube );
-
+                //PLANETS
                 var spheres=[];
-
-                spheres.push(new Planet(100,30,0,0)); //down to 10 from 100
-                spheres.push(new Planet(20,5,350,0));
-                spheres.push(new Planet(20, 5, -200, 0));
-
-                for(var i=0;i<3;i++){
+                spheres.push(new Planet(700,50,0,0)); //down to 10 from 100
+                spheres.push(new Planet(10,20,1000,0));
+                //spheres.push(new Planet(10, 20, -500, 0));
+                spheres.push(new Planet(0.7,5,1558,0));
+                //spheres.push(new Planet(0,1,5,360,0));
+                spheres[0].sphere.castShadow=false;
+                spheres[0].sphere.receiveShadow=false;
+                for(var i=0;i<spheres.length;i++){
                     //spheres.push(new Planet(Math.random()*50,Math.random()*50,Math.random()*200,Math.random()*200));
                     scene.add(spheres[i].sphere);
                 }
+
                 /*var terrain = new THREE.Mesh(new THREE.CubeGeometry(1000,1,1000),new THREE.MeshLambertMaterial({color: 0x00ff00}));
                 terrain.position.set(0,-70,-500);
                 terrain.castShadow=true;
                 terrain.receiveShadow=true;
                 scene.add(terrain);*/
 
-                var light = new THREE.AmbientLight(0xffffff,0.5);
-                scene.add(light);
-                var light2 = new THREE.PointLight(0xffffff,0.5);
+                //LIGHT
+                /*var light = new THREE.AmbientLight(0xffffff,0.5);*/
+                var sunLight = new THREE.PointLight(0xffffff,3);
+                //var ligth = new THREE.SpotLight(0xffffff,0.1);
+                //ligth.target=spheres[0].sphere;
                 //var light2 = new THREE.SpotLight(0xffffff,0.5,3000);
-                light2.target=cube;
+                sunLight.position.set(0,0,-500);
                 renderer.shadowMap.enabled=true;
                 renderer.shadowMap.type = THREE.PCFShadowMap;
-                light2.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100,1,500,1000));
-                light2.shadow.bias=0.0001;
-                light2.shadow.mapSize.width=2048*2;
-                light2.shadow.mapSize.height=2048*2;
-                scene.add(light2);
+                sunLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100,1,500,1000));
+                sunLight.shadow.bias=0.0001;
+                sunLight.shadow.mapSize.width=2048*2;
+                sunLight.shadow.mapSize.height=2048*2;
+                scene.add(sunLight);
+                //scene.add(ligth);
 
-                var shadowMapViewer = new THREE.ShadowMapViewer(light2);
+                //SHADOWS
+                var shadowMapViewer = new THREE.ShadowMapViewer(sunLight);
                 shadowMapViewer.position.x=10;
                 shadowMapViewer.position.y=10;
                 shadowMapViewer.size.width=2048/10;
                 shadowMapViewer.size.height=2048/10;
                 shadowMapViewer.update();
+
+                //SUN GLOW
+                spheres[0].sphere.material=new THREE.MeshBasicMaterial( {color: 0xffd700} );
+                var spriteMaterial = new THREE.SpriteMaterial(
+                    {
+                        map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ),
+                        color: 0xffd700, transparent: false, blending: THREE.AdditiveBlending
+                    });
+                var sprite = new THREE.Sprite( spriteMaterial );
+                sprite.scale.set(200, 200, 1.0);
+                spheres[0].sphere.add(sprite);
 
                 var delta =0;
                 var render = function () {
@@ -88,10 +100,10 @@
                     spheres[0].sphere.position.x = 0;
                     spheres[0].sphere.position.y = 0;
                     spheres[0].velocity = [0, 0, 0];
-                    spheres[1].applyGravity(spheres[0]);
-                    spheres[1].update();
-                    spheres[2].applyGravity(spheres[0]);
-                    spheres[2].update();
+                    for(var i=1;i<spheres.length;i++){
+                        spheres[i].applyGravity(spheres,i);
+                        spheres[i].update();
+                    }
 
                     /*
                     spheres[2].sphere.position.x+=1;

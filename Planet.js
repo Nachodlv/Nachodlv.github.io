@@ -12,6 +12,7 @@ function Planet(mass, radius, xPosition, yPosition){
     this.sphere.receiveShadow=true;
     this.sphere.position.set(xPosition,yPosition,-500);
     this.applyGravity = applyGravity;
+    this.applyGravityOfOnePlanet = applyGravityOfOnePlanet;
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
     this.update = update;
@@ -24,7 +25,15 @@ function update(){
     this.sphere.position.z += this.velocity[2];
 }
 
-function applyGravity(planet){
+function applyGravity(planets, index){
+    for(var i=0;i<planets.length;i++){
+        if(index!==i){
+            this.applyGravityOfOnePlanet(planets[i]);
+        }
+    }
+}
+
+function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
     var number = -(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //needs to be multiplied by G
