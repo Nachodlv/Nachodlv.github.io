@@ -11,19 +11,26 @@
         <script src="js/src/geometries/TextGeometry.js"></script>
         <script src="js/examples/js/shaders/UnpackDepthRGBAShader.js"></script>
         <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
+        <script src="js/examples/js/controls/OrbitControls.js"></script>
+        <script src="js/examples/js/controls/TrackballControls.js"></script>
         <script src="Planet.js"></script>
             <script>
-                //CAMERA, RENDERER AND SCENE
+                //RENDERER AND SCENE
                 var scene = new THREE.Scene();
-                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 3000 );
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 document.body.appendChild( renderer.domElement );
+
+                //CAMERA
+                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
                 camera.position.set(0,0,1700);
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.addEventListener( 'change', render );
+                controls.enableZoom=true;
 
                 //PLANETS
                 var spheres=[];
-                spheres.push(new Planet(700,50,0,0)); //down to 10 from 100
+                spheres.push(new Planet(700,50,0,0));//down to 10 from 100
                 spheres.push(new Planet(10,20,1000,0));
                 //spheres.push(new Planet(10, 20, -500, 0));
                 spheres.push(new Planet(0.7,5,1558,0));
