@@ -33,13 +33,13 @@
                 //PLANETS
                 var planets = [];
                 var spheres=[];
-                spheres.push(new Planet(700,50,0,0));//down to 10 from 100
+                spheres.push(new Planet(700,50,0,0,0));//down to 10 from 100
                 controls.target=spheres[0].sphere.position;
                 planets.push(spheres[0].sphere);
-                spheres.push(new Planet(10,20,1000,0));
+                spheres.push(new Planet(10,20,1000,0,90));
                 planets.push(spheres[1].sphere);
                 //spheres.push(new Planet(10, 20, -500, 0));
-                spheres.push(new Planet(0.7,5,1558,0));
+                spheres.push(new Planet(15,30,1558,0,0));
                 planets.push(spheres[2].sphere);
                 //spheres.push(new Planet(0,1,5,360,0));
                 spheres[0].sphere.castShadow=false;
@@ -103,14 +103,29 @@
                     }
                 }
 
+                var velocity=1;
+                document.addEventListener("keydown", onDocumentKeyDown, false);
+                function onDocumentKeyDown(event) {
+                    var keyCode = event.which;
+
+                    // 'D'
+                    if(keyCode === 68)
+                        velocity -= 1;
+                    // 'F'
+                    else if(keyCode === 70)
+                        velocity += 1;
+                }
+
                 var render = function () {
                     spheres[0].sphere.position.x = 0;
                     spheres[0].sphere.position.y = 0;
                     spheres[0].velocity = [0, 0, 0];
 
-                    for(var i=1;i<spheres.length;i++){
-                        spheres[i].applyGravity(spheres,i);
-                        spheres[i].update();
+                    for(var j=0;j<velocity;j++) {
+                        for (var i = 1; i < spheres.length; i++) {
+                            spheres[i].applyGravity(spheres, i);
+                            spheres[i].update(velocity);
+                        }
                     }
                     camera.position = controls.target;
 

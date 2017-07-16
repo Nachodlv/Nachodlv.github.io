@@ -1,7 +1,7 @@
 /**
  * Created by Ignacio on 16/6/2017.
  */
-function Planet(mass, radius, xPosition, yPosition){
+function Planet(mass, radius, xPosition, yPosition, angle){
     this.mass=mass;
     this.radius=radius;
     var geometry = new THREE.SphereGeometry(radius,100,100);
@@ -16,21 +16,42 @@ function Planet(mass, radius, xPosition, yPosition){
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
     this.update = update;
-    this.camera;
+    this.camera = null;
     this.hasCamera = false;
     this.setCameraTarget = setCameraTarget;
-    this.velocity = [0, 2.5, 0]; //we have to tweak this values
+    this.tracks = [];
+    this.colorTrack  =  Math.random() * 0xffffff;
+    this.trackLength = 1500; //we have to tweak this values
+    var totalVelocity = 2.5; //we have to tweak this values
+    var zVelocity = totalVelocity * (angle/90);
+    var yVelocity = totalVelocity-zVelocity;
+    this.velocity = [0, yVelocity, zVelocity];
 }
 
-function update(){
+function update(velocity){
     if(this.hasCamera){
         this.camera.position.x += this.velocity[0];
         this.camera.position.y += this.velocity[1];
         this.camera.position.z += this.velocity[2];
     }
+
+    //creates track
+    var track = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),new THREE.MeshBasicMaterial({color: this.colorTrack}));
+    track.position.x = this.sphere.position.x;
+    track.position.y = this.sphere.position.y;
+    track.position.z = this.sphere.position.z;
+    scene.add(track);
+    this.tracks[this.tracks.length]=track;
+    if(this.tracks.length>this.trackLength){
+        scene.remove(this.tracks[0]);
+        this.tracks.splice(0,1);
+    }
+
+
     this.sphere.position.x += this.velocity[0];
     this.sphere.position.y += this.velocity[1];
     this.sphere.position.z += this.velocity[2];
+
 }
 
 function setCameraTarget(camera){
