@@ -92,6 +92,13 @@
 
                     if (intersects.length > 0) {
                         controls.target = intersects[0].object.position;
+                        var planet;
+                        for(var i=0;i<spheres.length;i++){
+                            if(spheres[i].sphere.position.equals(intersects[0].object.position)){
+                                planet=spheres[i];
+                            }
+                        }
+                        planet.setCameraTarget(camera);
                         controls.update();
                     }
                 }

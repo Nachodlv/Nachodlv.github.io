@@ -16,13 +16,26 @@ function Planet(mass, radius, xPosition, yPosition){
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
     this.update = update;
+    this.camera;
+    this.hasCamera = false;
+    this.setCameraTarget = setCameraTarget;
     this.velocity = [0, 2.5, 0]; //we have to tweak this values
 }
 
 function update(){
+    if(this.hasCamera){
+        this.camera.position.x += this.velocity[0];
+        this.camera.position.y += this.velocity[1];
+        this.camera.position.z += this.velocity[2];
+    }
     this.sphere.position.x += this.velocity[0];
     this.sphere.position.y += this.velocity[1];
     this.sphere.position.z += this.velocity[2];
+}
+
+function setCameraTarget(camera){
+    this.hasCamera=true;
+    this.camera=camera;
 }
 
 function applyGravity(planets, index){
