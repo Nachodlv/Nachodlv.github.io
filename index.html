@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>The simulator of life</title>
+    <title>O.F.W.</title>
 </head>
     <body>
         <script src="js/build/three.js"></script>
@@ -80,6 +80,7 @@
                 sprite.scale.set(200, 200, 1.0);
                 spheres[0].sphere.add(sprite);
 
+                var previousCameraTarget= spheres[0];
                 function onDocumentMouseDown(event) {
                     event.preventDefault();
 
@@ -91,6 +92,7 @@
                     var intersects = raycaster.intersectObjects(planets);
 
                     if (intersects.length > 0) {
+                        previousCameraTarget.hasCamera=false;
                         controls.target = intersects[0].object.position;
                         var planet;
                         for(var i=0;i<spheres.length;i++){
@@ -98,6 +100,7 @@
                                 planet=spheres[i];
                             }
                         }
+                        previousCameraTarget = planet;
                         planet.setCameraTarget(camera);
                         controls.update();
                     }
