@@ -1,6 +1,3 @@
-/**
- * Created by Ignacio on 16/6/2017.
- */
 function Planet(mass, radius, xPosition, yPosition, angle){
     this.mass=mass;
     this.radius=radius;
@@ -8,9 +5,17 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     var material = new THREE.MeshLambertMaterial( {
         color: 0x117ab3} );
     this.sphere = new THREE.Mesh( geometry, material );
+
     this.sphere.castShadow=true;
     this.sphere.receiveShadow=true;
     this.sphere.position.set(xPosition,yPosition,-500);
+
+    var clickableMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+    clickableMaterial.visible=false;
+    this.clickableSphere = new THREE.Mesh(geometry,clickableMaterial);
+    this.clickableSphere.position.set(xPosition,yPosition,-500);
+
+    this.scaleClickableSphere = scaleClickableSphere;
     this.applyGravity = applyGravity;
     this.applyGravityOfOnePlanet = applyGravityOfOnePlanet;
     this.calculateDirection = calculateDirection;
@@ -28,7 +33,8 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     this.velocity = [0, yVelocity, zVelocity];
 }
 
-function update(velocity){
+function update(){
+    //if it has the camera, it moves it.
     if(this.hasCamera){
         this.camera.position.x += this.velocity[0];
         this.camera.position.y += this.velocity[1];
@@ -47,11 +53,18 @@ function update(velocity){
         this.tracks.splice(0,1);
     }
 
-
+    //moves the planet
     this.sphere.position.x += this.velocity[0];
     this.sphere.position.y += this.velocity[1];
     this.sphere.position.z += this.velocity[2];
+    this.clickableSphere.position.set(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z);
+}
 
+function scaleClickableSphere(){
+    //update the size of the clickable sphere
+    var scale = this.clickableSphere.position.distanceTo(camera.position)/1000 ;
+    scale = Math.max(1, scale);
+    this.clickableSphere.scale.set(scale,scale,scale);
 }
 
 function setCameraTarget(camera){
