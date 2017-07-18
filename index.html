@@ -13,12 +13,15 @@
         <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
         <script src="js/examples/js/controls/OrbitControls.js"></script>
         <script src="js/examples/js/renderers/Projector.js"></script>
+        <script type="text/javascript" src="dat.gui-0.6.5/build/dat.gui.js"></script>
+        <script src="GUI.js"></script>
         <script src="Level.js"></script>
         <script src="Planet.js"></script>
             <script>
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(renderer.domElement);
+                renderer.setClearColor(0x000000);
 
                 var scene;
                 var camera;
@@ -36,7 +39,9 @@
                 level.sceneInit();
                 camera = level.camera;
 
+
                 var render = function () {
+
                     if(scene1Loaded)
                         level.animateScene();
 

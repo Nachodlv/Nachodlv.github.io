@@ -2,9 +2,11 @@ function Level(){
     this.sceneInit = sceneInit;
     this.animateScene = animateScene;
     this.loadPlanetsScene1 = loadPlanetsScene1;
+
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
     this.camera.position.set(0, 0, 1700);
+
     controls = new THREE.OrbitControls(this.camera, renderer.domElement);
     controls.addEventListener('change', render);
     /*controls.enabled=false;
@@ -33,7 +35,7 @@ function sceneInit() {
         if (intersects.length > 0) {
             previousCameraTarget.hasCamera = false;
             controls.target = intersects[0].object.position;
-            var planet;
+            var planet = planets[0];
             for (var i = 0; i < planets.length; i++) {
                 if (planets[i].sphere.position.equals(intersects[0].object.position)) {
                     planet = planets[i];
@@ -41,9 +43,16 @@ function sceneInit() {
             }
             previousCameraTarget = planet;
             planet.setCameraTarget(camera);
+            var planetModificationGUI = new function () {
+                this.mass = planet.mass;
+                this.radius = planet.radius;
+            };
+            planet.openGUI(planetModificationGUI);
             controls.update();
         }
     }
+
+
 
     function onDocumentKeyDown(event) {
         var keyCode = event.which;

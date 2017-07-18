@@ -31,6 +31,11 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
     this.velocity = [0, yVelocity, zVelocity];
+    this.openGUI = openGui;
+    this.closeGUI = closeGUI;
+    this.infoPlanetGUI = null;
+    this.guiOpen = false;
+    this.planetModificationGUI=null;
 }
 
 function update(){
@@ -58,14 +63,35 @@ function update(){
     this.sphere.position.y += this.velocity[1];
     this.sphere.position.z += this.velocity[2];
     this.clickableSphere.position.set(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z);
-}
 
+    //update the info of the gui
+    if(this.guiOpen){
+        this.mass=this.planetModificationGUI.mass;
+        this.radius=this.planetModificationGUI.radius;
+    }
+}
+//update the size of the clickable sphere
 function scaleClickableSphere(){
-    //update the size of the clickable sphere
     var scale = this.clickableSphere.position.distanceTo(camera.position)/1000 ;
     scale = Math.max(1, scale);
     this.clickableSphere.scale.set(scale,scale,scale);
 }
+
+function openGui(planetModificationGUI){
+    this.planetModificationGUI=planetModificationGUI;
+    this.infoPlanetGUI = new dat.GUI();
+    this.infoPlanetGUI .add(this.planetModificationGUI, 'mass' , 1 , 100);
+    this.infoPlanetGUI .add(this.planetModificationGUI, 'radius' , 1 , 100);
+    this.guiOpen=true;
+}
+
+function closeGUI(){
+    if(this.guiOpen) {
+        dat.GUI.toggleHide();
+        this.guiOpen = false;
+    }
+}
+
 
 function setCameraTarget(camera){
     this.hasCamera=true;
