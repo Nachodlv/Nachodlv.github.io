@@ -13,124 +13,32 @@
         <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
         <script src="js/examples/js/controls/OrbitControls.js"></script>
         <script src="js/examples/js/renderers/Projector.js"></script>
-
+        <script src="Level.js"></script>
         <script src="Planet.js"></script>
             <script>
-                //RENDERER AND SCENE
-                var scene = new THREE.Scene();
                 var renderer = new THREE.WebGLRenderer();
-                renderer.setSize( window.innerWidth, window.innerHeight );
-                document.body.appendChild( renderer.domElement );
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
 
-                //CAMERA
-                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
-                camera.position.set(0,0,1700);
-                var controls = new THREE.OrbitControls(camera, renderer.domElement);
-                controls.addEventListener( 'change', render );
-                /*controls.enabled=false;
-                controls.enableZoom=true;*/
+                var scene;
+                var camera;
+                var scene1Loaded = true;
 
-                //PLANETS
+                //For the interactions
+                var animationVelocity=1;
+                var spheresIntersection=[];
                 var planets = [];
-                var spheres=[];
-                spheres.push(new Planet(700,50,0,0,0));//down to 10 from 100
-                controls.target=spheres[0].sphere.position;
-                planets.push(spheres[0].sphere);
-                spheres.push(new Planet(10,20,1000,0,90));
-                planets.push(spheres[1].sphere);
-                //spheres.push(new Planet(10, 20, -500, 0));
-                spheres.push(new Planet(15,30,1558,0,0));
-                planets.push(spheres[2].sphere);
-                //spheres.push(new Planet(0,1,5,360,0));
-                spheres[0].sphere.castShadow=false;
-                spheres[0].sphere.receiveShadow=false;
-                for(var i=0;i<spheres.length;i++){
-                    scene.add(spheres[i].sphere);
-                }
+                var control;
 
-                //INTERACTION WITH PLANETS
-                var projector = new THREE.Projector();
-                raycaster = new THREE.Raycaster();
-                var mouse = new THREE.Vector3();
-                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-
-
-                //LIGHT
-                /*var light = new THREE.AmbientLight(0xffffff,0.5);*/
-                var sunLight = new THREE.PointLight(0xffffff,3);
-                //var ligth = new THREE.SpotLight(0xffffff,0.1);
-                //ligth.target=spheres[0].sphere;
-                //var light2 = new THREE.SpotLight(0xffffff,0.5,3000);
-                sunLight.position.set(0,0,-500);
-                sunLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100,1,500,1000));
-                sunLight.shadow.bias=0.0001;
-                sunLight.shadow.mapSize.width=2048*2;
-                sunLight.shadow.mapSize.height=2048*2;
-                scene.add(sunLight);
-                //scene.add(ligth);
-
-                //SUN GLOW
-                spheres[0].sphere.material=new THREE.MeshBasicMaterial( {color: 0xffd700} );
-                var spriteMaterial = new THREE.SpriteMaterial(
-                    {
-                        map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ),
-                        color: 0xffd700, transparent: false, blending: THREE.AdditiveBlending
-                    });
-                var sprite = new THREE.Sprite( spriteMaterial );
-                sprite.scale.set(200, 200, 1.0);
-                spheres[0].sphere.add(sprite);
-
-                var previousCameraTarget= spheres[0];
-                function onDocumentMouseDown(event) {
-                    event.preventDefault();
-
-                    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-                    mouse.y = -( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
-
-                    raycaster.setFromCamera(mouse, camera);
-
-                    var intersects = raycaster.intersectObjects(planets);
-
-                    if (intersects.length > 0) {
-                        previousCameraTarget.hasCamera=false;
-                        controls.target = intersects[0].object.position;
-                        var planet;
-                        for(var i=0;i<spheres.length;i++){
-                            if(spheres[i].sphere.position.equals(intersects[0].object.position)){
-                                planet=spheres[i];
-                            }
-                        }
-                        previousCameraTarget = planet;
-                        planet.setCameraTarget(camera);
-                        controls.update();
-                    }
-                }
-
-                var velocity=1;
-                document.addEventListener("keydown", onDocumentKeyDown, false);
-                function onDocumentKeyDown(event) {
-                    var keyCode = event.which;
-
-                    // 'D'
-                    if(keyCode === 68)
-                        velocity -= 1;
-                    // 'F'
-                    else if(keyCode === 70)
-                        velocity += 1;
-                }
+                //Load scene 1
+                var level = new Level();
+                scene = level.loadPlanetsScene1();
+                level.sceneInit();
+                camera = level.camera;
 
                 var render = function () {
-                    spheres[0].sphere.position.x = 0;
-                    spheres[0].sphere.position.y = 0;
-                    spheres[0].velocity = [0, 0, 0];
-
-                    for(var j=0;j<velocity;j++) {
-                        for (var i = 1; i < spheres.length; i++) {
-                            spheres[i].applyGravity(spheres, i);
-                            spheres[i].update(velocity);
-                        }
-                    }
-                    camera.position = controls.target;
+                    if(scene1Loaded)
+                        level.animateScene();
 
                     requestAnimationFrame(render);
                     renderer.render(scene, camera);
