@@ -32,13 +32,12 @@
                 var spheresIntersection=[];
                 var planets = [];
                 var control;
+                var previousCameraTarget;
 
                 //Load scene 1
                 var level = new Level();
                 scene = level.loadPlanetsScene1();
                 level.sceneInit();
-                camera = level.camera;
-
 
                 var render = function () {
 

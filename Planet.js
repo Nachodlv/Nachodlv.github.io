@@ -15,7 +15,6 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     this.clickableSphere = new THREE.Mesh(geometry,clickableMaterial);
     this.clickableSphere.position.set(xPosition,yPosition,-500);
 
-    this.scaleClickableSphere = scaleClickableSphere;
     this.applyGravity = applyGravity;
     this.applyGravityOfOnePlanet = applyGravityOfOnePlanet;
     this.calculateDirection = calculateDirection;
@@ -26,7 +25,7 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     this.setCameraTarget = setCameraTarget;
     this.tracks = [];
     this.colorTrack  =  Math.random() * 0xffffff;
-    this.trackLength = 1500; //we have to tweak this values
+    this.trackLength = 100; //we have to tweak this values
     var totalVelocity = 2.5; //we have to tweak this values
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
@@ -36,58 +35,64 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     this.infoPlanetGUI = null;
     this.guiOpen = false;
     this.planetModificationGUI=null;
+    this.isSun=false;
+    this.sphereScale=1;
 }
 
-function update(){
-    //if it has the camera, it moves it.
-    if(this.hasCamera){
-        this.camera.position.x += this.velocity[0];
-        this.camera.position.y += this.velocity[1];
-        this.camera.position.z += this.velocity[2];
+function update() {
+    if (!this.isSun) {
+        //if it has the camera, it moves it.
+        if (this.hasCamera) {
+            this.camera.position.x += this.velocity[0];
+            this.camera.position.y += this.velocity[1];
+            this.camera.position.z += this.velocity[2];
+        }
+
+        //creates track
+        var track = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color: this.colorTrack}));
+        track.position.x = this.sphere.position.x;
+        track.position.y = this.sphere.position.y;
+        track.position.z = this.sphere.position.z;
+        scene.add(track);
+        this.tracks[this.tracks.length] = track;
+        if (this.tracks.length > this.trackLength) {
+            scene.remove(this.tracks[0]);
+            this.tracks.splice(0, 1);
+        }
+
+        //moves the planet
+        this.sphere.position.x += this.velocity[0];
+        this.sphere.position.y += this.velocity[1];
+        this.sphere.position.z += this.velocity[2];
+        this.clickableSphere.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
     }
 
-    //creates track
-    var track = new THREE.Mesh(new THREE.BoxGeometry(2,2,2),new THREE.MeshBasicMaterial({color: this.colorTrack}));
-    track.position.x = this.sphere.position.x;
-    track.position.y = this.sphere.position.y;
-    track.position.z = this.sphere.position.z;
-    scene.add(track);
-    this.tracks[this.tracks.length]=track;
-    if(this.tracks.length>this.trackLength){
-        scene.remove(this.tracks[0]);
-        this.tracks.splice(0,1);
-    }
-
-    //moves the planet
-    this.sphere.position.x += this.velocity[0];
-    this.sphere.position.y += this.velocity[1];
-    this.sphere.position.z += this.velocity[2];
-    this.clickableSphere.position.set(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z);
+    //update the size of the clickable sphere
+    var scale = this.clickableSphere.position.distanceTo(camera.position)/1000 ;
+    scale = Math.max(1, scale);
+    this.clickableSphere.scale.set(scale,scale,scale);
 
     //update the info of the gui
     if(this.guiOpen){
         this.mass=this.planetModificationGUI.mass;
-        this.radius=this.planetModificationGUI.radius;
+        this.sphereScale = this.planetModificationGUI.radius/this.radius;
+        this.sphere.scale.x = this.sphere.scale.y = this.sphere.scale.z = this.sphereScale;
     }
-}
-//update the size of the clickable sphere
-function scaleClickableSphere(){
-    var scale = this.clickableSphere.position.distanceTo(camera.position)/1000 ;
-    scale = Math.max(1, scale);
-    this.clickableSphere.scale.set(scale,scale,scale);
 }
 
 function openGui(planetModificationGUI){
     this.planetModificationGUI=planetModificationGUI;
     this.infoPlanetGUI = new dat.GUI();
-    this.infoPlanetGUI .add(this.planetModificationGUI, 'mass' , 1 , 100);
-    this.infoPlanetGUI .add(this.planetModificationGUI, 'radius' , 1 , 100);
+    this.infoPlanetGUI.add(this.planetModificationGUI, 'mass' , 1 );
+    this.infoPlanetGUI.add(this.planetModificationGUI, 'radius' , 1 );
+    this.infoPlanetGUI.add(this.planetModificationGUI,'name');
     this.guiOpen=true;
 }
 
 function closeGUI(){
     if(this.guiOpen) {
-        dat.GUI.toggleHide();
+        //this.infoPlanetGUI.hide=true;
+        this.infoPlanetGUI.destroy();
         this.guiOpen = false;
     }
 }

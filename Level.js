@@ -4,10 +4,10 @@ function Level(){
     this.loadPlanetsScene1 = loadPlanetsScene1;
 
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-    this.camera.position.set(0, 0, 1700);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 0, 1700);
 
-    controls = new THREE.OrbitControls(this.camera, renderer.domElement);
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.addEventListener('change', render);
     /*controls.enabled=false;
      controls.enableZoom=true;*/
@@ -21,9 +21,8 @@ function sceneInit() {
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener("keydown", onDocumentKeyDown, false);
 
-    var previousCameraTarget = planets[0];
+    previousCameraTarget = planets[0];
     function onDocumentMouseDown(event) {
-        event.preventDefault();
 
         mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
         mouse.y = -( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
@@ -34,6 +33,8 @@ function sceneInit() {
 
         if (intersects.length > 0) {
             previousCameraTarget.hasCamera = false;
+            if(previousCameraTarget.guiOpen) previousCameraTarget.closeGUI();
+
             controls.target = intersects[0].object.position;
             var planet = planets[0];
             for (var i = 0; i < planets.length; i++) {
@@ -46,6 +47,7 @@ function sceneInit() {
             var planetModificationGUI = new function () {
                 this.mass = planet.mass;
                 this.radius = planet.radius;
+                this.name = "planet";
             };
             planet.openGUI(planetModificationGUI);
             controls.update();
@@ -78,14 +80,11 @@ function animateScene(){
     planets[0].velocity = [0, 0, 0];
 
     for(var j=0;j<animationVelocity;j++) {
-        planets[0].scaleClickableSphere();
-        for (var i = 1; i < planets.length; i++) {
+        for (var i = 0; i < planets.length; i++) {
             planets[i].applyGravity(planets, i);
             planets[i].update();
-            planets[i].scaleClickableSphere();
         }
     }
-    this.camera.position = controls.target;
 }
 
 function loadPlanetsScene1(){
@@ -99,6 +98,7 @@ function loadPlanetsScene1(){
     spheresIntersection.push(planets[2].clickableSphere);
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
+    planets[0].isSun=true;
     for (var i = 0; i < planets.length; i++) {
         this.scene.add(planets[i].clickableSphere);
         this.scene.add(planets[i].sphere);
