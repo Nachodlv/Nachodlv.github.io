@@ -2,7 +2,6 @@ function Level(){
     this.sceneInit = sceneInit;
     this.animateScene = animateScene;
     this.loadPlanetsScene1 = loadPlanetsScene1;
-
     this.scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
     camera.position.set(0, 0, 1700);
@@ -11,6 +10,48 @@ function Level(){
     controls.addEventListener('change', render);
     /*controls.enabled=false;
      controls.enableZoom=true;*/
+}
+
+function loadPlanetGUI(planet){
+    var planetModificationGUI = new function () {
+        this.mass = planet.mass;
+        this.radius = planet.radius;
+        this.name = planet.name;
+    };
+    planet.openGUI(planetModificationGUI);
+}
+function consoleLog(){
+    console.log("clicked");
+}
+
+function refreshPlanetListGUI(){
+    for(var i=0;i<planets.length;i++){
+        f1.remove(controllerArray[i]);
+    }
+    loadPlanetListGUI();
+}
+
+function loadPlanetListGUI(){
+    var planetButton = {
+        Button: function (planet) {
+            goToPlanet(planet);
+        }
+    };
+
+    controllerArray = [];
+    for(var i=0;i<planets.length;i++){
+        controllerArray[i] = f1.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
+    }
+}
+
+function goToPlanet(planet){
+    previousCameraTarget.hasCamera = false;
+    if(previousCameraTarget.guiOpen) previousCameraTarget.closeGUI();
+    previousCameraTarget = planet;
+    controls.target = planet.sphere.position;
+    planet.setCameraTarget(camera);
+    loadPlanetGUI(planet);
+    controls.update();
 }
 
 function sceneInit() {
@@ -23,7 +64,6 @@ function sceneInit() {
 
     previousCameraTarget = planets[0];
     function onDocumentMouseDown(event) {
-
         mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
         mouse.y = -( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
@@ -32,25 +72,14 @@ function sceneInit() {
         var intersects = raycaster.intersectObjects(spheresIntersection);
 
         if (intersects.length > 0) {
-            previousCameraTarget.hasCamera = false;
-            if(previousCameraTarget.guiOpen) previousCameraTarget.closeGUI();
-
-            controls.target = intersects[0].object.position;
             var planet = planets[0];
             for (var i = 0; i < planets.length; i++) {
                 if (planets[i].sphere.position.equals(intersects[0].object.position)) {
                     planet = planets[i];
                 }
             }
-            previousCameraTarget = planet;
-            planet.setCameraTarget(camera);
-            var planetModificationGUI = new function () {
-                this.mass = planet.mass;
-                this.radius = planet.radius;
-                this.name = "planet";
-            };
-            planet.openGUI(planetModificationGUI);
-            controls.update();
+
+            goToPlanet(planet);
         }
     }
 
@@ -89,12 +118,12 @@ function animateScene(){
 
 function loadPlanetsScene1(){
     //PLANETS
-    planets.push(new Planet(700, 50, 0, 0, 0));//down to 10 from 100
+    planets.push(new Planet(700, 50, 0, 0, 0, "Sun"));//down to 10 from 100
     controls.target = planets[0].sphere.position;
     spheresIntersection.push(planets[0].clickableSphere);
-    planets.push(new Planet(10, 20, 1000, 0, 15));
+    planets.push(new Planet(10, 20, 1000, 0, 15, "Earth"));
     spheresIntersection.push(planets[1].clickableSphere);
-    planets.push(new Planet(15, 30, 1558, 0, 0));
+    planets.push(new Planet(15, 30, 1558, 0, 0, "Earth-2"));
     spheresIntersection.push(planets[2].clickableSphere);
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
@@ -123,6 +152,11 @@ function loadPlanetsScene1(){
     var sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(200, 200, 1.0);
     planets[0].sphere.add(sprite);
+
+    //Planet list GUI
+    guiPlanetList = new dat.GUI({autoPlace: true});
+    f1 = guiPlanetList.addFolder('Current planets');
+    loadPlanetListGUI();
 
     return this.scene;
 }

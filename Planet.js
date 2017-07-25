@@ -1,6 +1,7 @@
-function Planet(mass, radius, xPosition, yPosition, angle){
+function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.mass=mass;
     this.radius=radius;
+    this.name = name;
     var geometry = new THREE.SphereGeometry(radius,100,100);
     var material = new THREE.MeshLambertMaterial( {
         color: 0x117ab3} );
@@ -32,11 +33,13 @@ function Planet(mass, radius, xPosition, yPosition, angle){
     this.velocity = [0, yVelocity, zVelocity];
     this.openGUI = openGui;
     this.closeGUI = closeGUI;
+    this.radiusGUI=radius;
     this.infoPlanetGUI = null;
     this.guiOpen = false;
     this.planetModificationGUI=null;
     this.isSun=false;
     this.sphereScale=1;
+    this.nameController=undefined;
 }
 
 function update() {
@@ -75,18 +78,24 @@ function update() {
     //update the info of the gui
     if(this.guiOpen){
         this.mass=this.planetModificationGUI.mass;
-        this.sphereScale = this.planetModificationGUI.radius/this.radius;
+        this.sphereScale = this.planetModificationGUI.radius/this.radiusGUI;
         this.sphere.scale.x = this.sphere.scale.y = this.sphere.scale.z = this.sphereScale;
+        this.radius = this.planetModificationGUI.radius;
+        this.name = this.planetModificationGUI.name;
     }
 }
 
 function openGui(planetModificationGUI){
     this.planetModificationGUI=planetModificationGUI;
     this.infoPlanetGUI = new dat.GUI();
+    this.nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'name');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'mass' , 1 );
     this.infoPlanetGUI.add(this.planetModificationGUI, 'radius' , 1 );
-    this.infoPlanetGUI.add(this.planetModificationGUI,'name');
     this.guiOpen=true;
+    var planet = this;
+    this.nameController.onFinishChange(function(value) {
+        refreshPlanetListGUI();
+    });
 }
 
 function closeGUI(){

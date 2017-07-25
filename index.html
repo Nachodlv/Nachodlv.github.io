@@ -17,6 +17,7 @@
         <script src="GUI.js"></script>
         <script src="Level.js"></script>
         <script src="Planet.js"></script>
+        <div id = "gui"></div>
             <script>
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -33,6 +34,11 @@
                 var planets = [];
                 var control;
                 var previousCameraTarget;
+
+                //List of planets GUI
+                var guiPlanetList;
+                var f1;
+                var controllerArray;
 
                 //Load scene 1
                 var level = new Level();
