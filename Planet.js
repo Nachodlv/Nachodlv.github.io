@@ -20,13 +20,14 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.applyGravityOfOnePlanet = applyGravityOfOnePlanet;
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
+    this.eraseTrack = eraseTrack;
+    this.destroy = destroy;
     this.update = update;
     this.camera = null;
     this.hasCamera = false;
     this.setCameraTarget = setCameraTarget;
     this.tracks = [];
     this.colorTrack  =  Math.random() * 0xffffff;
-    this.trackLength = 100; //we have to tweak this values
     var totalVelocity = 2.5; //we have to tweak this values
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
@@ -52,15 +53,17 @@ function update() {
         }
 
         //creates track
-        var track = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color: this.colorTrack}));
-        track.position.x = this.sphere.position.x;
-        track.position.y = this.sphere.position.y;
-        track.position.z = this.sphere.position.z;
-        scene.add(track);
-        this.tracks[this.tracks.length] = track;
-        if (this.tracks.length > this.trackLength) {
-            scene.remove(this.tracks[0]);
-            this.tracks.splice(0, 1);
+        if(trackActivated) {
+            var track = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color: this.colorTrack}));
+            track.position.x = this.sphere.position.x;
+            track.position.y = this.sphere.position.y;
+            track.position.z = this.sphere.position.z;
+            scene.add(track);
+            this.tracks[this.tracks.length] = track;
+            while(this.tracks.length>trackLength){
+                scene.remove(this.tracks[0]);
+                this.tracks.splice(0, 1);
+            }
         }
 
         //moves the planet
@@ -68,6 +71,10 @@ function update() {
         this.sphere.position.y += this.velocity[1];
         this.sphere.position.z += this.velocity[2];
         this.clickableSphere.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
+    }else{
+        this.sphere.position.x = 0;
+        this.sphere.position.y = 0;
+        this.velocity = [0, 0, 0];
     }
 
     //update the size of the clickable sphere
@@ -87,10 +94,17 @@ function update() {
 
 function openGui(planetModificationGUI){
     this.planetModificationGUI=planetModificationGUI;
+    var destroyButton = {
+        Destroy: function () {
+            this.destroy();
+            refreshPlanetListGUI();
+        }
+    };
     this.infoPlanetGUI = new dat.GUI();
     this.nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'name');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'mass' , 1 );
     this.infoPlanetGUI.add(this.planetModificationGUI, 'radius' , 1 );
+    this.infoPlanetGUI.add({Destroy: destroyButton.Destroy.bind(this)},'Destroy');
     this.guiOpen=true;
     var planet = this;
     this.nameController.onFinishChange(function(value) {
@@ -106,6 +120,12 @@ function closeGUI(){
     }
 }
 
+function eraseTrack(){
+    for(var i=0;i<this.tracks.length;i++){
+        scene.remove(this.tracks[i]);
+    }
+    this.tracks = [];
+}
 
 function setCameraTarget(camera){
     this.hasCamera=true;
@@ -148,4 +168,16 @@ function calculateDistance(planet){
     distance += Math.pow(this.sphere.position.z - planet.sphere.position.z, 2);
     distance = Math.sqrt(distance);
     return distance;
+}
+
+function destroy(){
+    scene.remove(this.sphere);
+    for(var i=0;i<planets.length;i++){
+        if(planets[i]===this){
+            planets.splice(i,1);
+            this.eraseTrack();
+            this.closeGUI();
+            return;
+        }
+    }
 }

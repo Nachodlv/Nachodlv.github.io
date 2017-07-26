@@ -8,6 +8,7 @@ function Level(){
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.addEventListener('change', render);
+    controls.maxDistance = 2000;
     /*controls.enabled=false;
      controls.enableZoom=true;*/
 }
@@ -25,8 +26,8 @@ function consoleLog(){
 }
 
 function refreshPlanetListGUI(){
-    for(var i=0;i<planets.length;i++){
-        f1.remove(controllerArray[i]);
+    for(var i=0;i<controllerArray.length;i++){
+        planetFolder.remove(controllerArray[i]);
     }
     loadPlanetListGUI();
 }
@@ -40,7 +41,7 @@ function loadPlanetListGUI(){
 
     controllerArray = [];
     for(var i=0;i<planets.length;i++){
-        controllerArray[i] = f1.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
+        controllerArray[i] = planetFolder.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
     }
 }
 
@@ -104,10 +105,6 @@ function dispose(){
 }
 
 function animateScene(){
-    planets[0].sphere.position.x = 0;
-    planets[0].sphere.position.y = 0;
-    planets[0].velocity = [0, 0, 0];
-
     for(var j=0;j<animationVelocity;j++) {
         for (var i = 0; i < planets.length; i++) {
             planets[i].applyGravity(planets, i);
@@ -153,10 +150,71 @@ function loadPlanetsScene1(){
     sprite.scale.set(200, 200, 1.0);
     planets[0].sphere.add(sprite);
 
-    //Planet list GUI
-    guiPlanetList = new dat.GUI({autoPlace: true});
-    f1 = guiPlanetList.addFolder('Current planets');
+    //Main GUI
+    mainGUI = new dat.GUI({autoPlace: true});
+    planetFolder = mainGUI.addFolder('Current planets');
+    planetFolder.open();
     loadPlanetListGUI();
+    loadTtimeGUI();
+    loadConfigurationGUI();
 
     return this.scene;
+}
+
+function loadTtimeGUI() {
+    var timeFolder = mainGUI.addFolder('Time controller');
+    timeFolder.open();
+
+    var configVariable = new function () {
+        this.timeSpeed = animationVelocity;
+    };
+    var playButton = {
+        Play: function () {
+            animationVelocity = configVariable.timeSpeed;
+        }
+    };
+    var stopButton = {
+        Stop: function () {
+            animationVelocity = 0;
+
+        }
+    };
+    var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
+    timeFolder.add(playButton, 'Play');
+    timeFolder.add(stopButton, 'Stop');
+    timeSpeedController.onFinishChange(function (value) {
+        animationVelocity=value;
+    });
+}
+//Configuration GUI
+function loadConfigurationGUI() {
+    var configVariable = new function () {
+        this.trackLength = trackLength;
+        this.trackActivated = trackActivated;
+        this.timeSpeed = animationVelocity;
+        this.shadows = true;
+    };
+    configurationFolder = mainGUI.addFolder('Configuration');
+    var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
+    var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
+    var shadowsController = configurationFolder.add(configVariable, 'shadows').name('Shadows');
+
+    lengthController.onFinishChange(function(value){
+        trackLength = value;
+    });
+    trackActivatedController.onFinishChange(function (value) {
+        trackActivated=value;
+        for(var i=0;i<planets.length;i++){
+            planets[i].eraseTrack();
+        }
+    });
+    shadowsController.onFinishChange(function (value) {
+       for(var i=0;i<planets.length;i++) {
+           if (!planets[i].isSun) {
+               planets[i].sphere.receiveShadow = value;
+               planets[i].sphere.castShadow = value;
+               planets[i].needsUpdate = true;
+           }
+       }
+    });
 }
