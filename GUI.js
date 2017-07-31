@@ -4,17 +4,17 @@ function loadAddPlanetButton(){
             if(isAdding){
                 return;
             }
-                isAdding=true;
-                var geometry = new THREE.PlaneGeometry(10000,10000,32,32);
-                var material = new THREE.MeshBasicMaterial( {
-                    color: 0x117ab3} );
-                material.side = THREE.DoubleSide;
-                material.wireframe=true;
-                var planeAdding = new THREE.Mesh( geometry, material );
-                planeAdding.position.set(0,0,-500);
-                planeAdding.rotateZ(90);
-                scene.add(planeAdding);
-                planeAddingIntersect[0]=planeAdding;
+            isAdding=true;
+            var geometry = new THREE.PlaneGeometry(10000,10000,32,32);
+            var material = new THREE.MeshBasicMaterial( {
+                color: 0x117ab3} );
+            material.side = THREE.DoubleSide;
+            material.wireframe=true;
+            var planeAdding = new THREE.Mesh( geometry, material );
+            planeAdding.position.set(0,0,-500);
+            planeAdding.rotateZ(90);
+            scene.add(planeAdding);
+            planeAddingIntersect[0]=planeAdding;
         }
     };
     mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet');
@@ -101,10 +101,9 @@ function loadPlanetListGUI(){
             goToPlanet(planet);
         }
     };
-
-    controllerArray = [];
+    controllerArray=[];
     for(var i=0;i<planets.length;i++){
-        controllerArray[i] = planetFolder.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
+        controllerArray[i]=planetFolder.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
     }
 }
 
@@ -142,7 +141,7 @@ function loadNewPlanetGUI(){
     addPlanetGUI.add(planetInfo,'name').name('Name');
     addPlanetGUI.add(planetInfo,'mass').name('Mass');
     var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius');
-    addPlanetGUI.add(planetInfo,'angle').name('Angle');
+    addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle');
     addPlanetGUI.add(createPlanetButton,'CreatePlanet').name('Create planet');
     addPlanetGUI.add(cancelButton, 'Cancel');
 

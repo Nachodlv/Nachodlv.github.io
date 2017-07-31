@@ -8,14 +8,9 @@ function Level(){
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.addEventListener('change', render);
-    controls.maxDistance = 2000;
+    controls.maxDistance = 20000;
     /*controls.enabled=false;
      controls.enableZoom=true;*/
-}
-
-function loadPlanetGUI(planet){
-
-    planet.openGUI(planetModificationGUI);
 }
 
 function goToPlanet(planet){
@@ -24,7 +19,7 @@ function goToPlanet(planet){
     previousCameraTarget = planet;
     controls.target = planet.sphere.position;
     planet.hasCamera = true;
-    loadPlanetGUI(planet);
+    planet.openGUI();
     controls.update();
 }
 
@@ -60,10 +55,8 @@ function sceneInit() {
             var material = new THREE.MeshLambertMaterial( {
                 color: 0x117ab3} );
             tempPlanet = new THREE.Mesh( geometry, material );
-            tempPlanet.position.set(planeIntersects[0].point.x,planeIntersects[0].point.y,-500);
+            tempPlanet.position.set(planeIntersects[0].point.x,planeIntersects[0].point.y,planeAddingIntersect[0].position.z);
             scene.add(tempPlanet);
-            //isAdding=false;
-            //creatingPlanet=true;
             scene.remove(planeAddingIntersect[0]);
             planeAddingIntersect=[];
             controls.target = tempPlanet.position;

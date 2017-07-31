@@ -39,7 +39,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.planetModificationGUI=null;
     this.isSun=false;
     this.sphereScale=1;
-    this.nameController=undefined;
 }
 
 function update() {
@@ -82,6 +81,7 @@ function update() {
     this.clickableSphere.scale.set(scale,scale,scale);
 
     //update the info of the gui
+    //Move to openGUI
     if(this.guiOpen){
         this.mass=this.planetModificationGUI.planetMass;
         this.sphereScale = this.planetModificationGUI.planetRadius/this.radiusGUI;
@@ -92,7 +92,8 @@ function update() {
 }
 
 function openGui(){
-    this.planetModificationGUI = new function () {
+    var planet = this;
+    var planetModificationGUI = new function () {
         this.planetMass = planet.mass;
         this.planetRadius = planet.radius;
         this.planetName = planet.name;
@@ -103,14 +104,14 @@ function openGui(){
             refreshPlanetListGUI();
         }
     };
+    this.planetModificationGUI=planetModificationGUI;
     this.infoPlanetGUI = new dat.GUI();
-    this.nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'planetName').name('Name');
+    var nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'planetName').name('Name');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'planetMass' , 1 ).name('Mass');
-    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1 .name('Radius'));
+    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1) .name('Radius');
     this.infoPlanetGUI.add({Destroy: destroyButton.Destroy.bind(this)},'Destroy');
     this.guiOpen=true;
-    var planet = this;
-    this.nameController.onFinishChange(function(value) {
+    nameController.onFinishChange(function(value) {
         refreshPlanetListGUI();
     });
 }
