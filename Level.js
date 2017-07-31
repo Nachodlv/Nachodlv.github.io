@@ -14,35 +14,8 @@ function Level(){
 }
 
 function loadPlanetGUI(planet){
-    var planetModificationGUI = new function () {
-        this.mass = planet.mass;
-        this.radius = planet.radius;
-        this.name = planet.name;
-    };
+
     planet.openGUI(planetModificationGUI);
-}
-function consoleLog(){
-    console.log("clicked");
-}
-
-function refreshPlanetListGUI(){
-    for(var i=0;i<controllerArray.length;i++){
-        planetFolder.remove(controllerArray[i]);
-    }
-    loadPlanetListGUI();
-}
-
-function loadPlanetListGUI(){
-    var planetButton = {
-        Button: function (planet) {
-            goToPlanet(planet);
-        }
-    };
-
-    controllerArray = [];
-    for(var i=0;i<planets.length;i++){
-        controllerArray[i] = planetFolder.add({Button: planetButton.Button.bind(this, planets[i])},'Button').name(planets[i].name);
-    }
 }
 
 function goToPlanet(planet){
@@ -50,7 +23,7 @@ function goToPlanet(planet){
     if(previousCameraTarget.guiOpen) previousCameraTarget.closeGUI();
     previousCameraTarget = planet;
     controls.target = planet.sphere.position;
-    planet.setCameraTarget(camera);
+    planet.hasCamera = true;
     loadPlanetGUI(planet);
     controls.update();
 }
@@ -58,19 +31,19 @@ function goToPlanet(planet){
 function sceneInit() {
     //INTERACTION WITH PLANETS
     var projector = new THREE.Projector();
-    raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector3();
     document.addEventListener('mousedown', onDocumentMouseDown, false);
-    document.addEventListener("keydown", onDocumentKeyDown, false);
 
     previousCameraTarget = planets[0];
     function onDocumentMouseDown(event) {
         mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
         mouse.y = -( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera);
+        raycasterPlanets.setFromCamera(mouse, camera);
+        raycasterPlane.setFromCamera(mouse,camera);
 
-        var intersects = raycaster.intersectObjects(spheresIntersection);
+        var intersects = raycasterPlanets.intersectObjects(spheresIntersection);
+        var planeIntersects = raycasterPlane.intersectObjects(planeAddingIntersect);
 
         if (intersects.length > 0) {
             var planet = planets[0];
@@ -82,20 +55,23 @@ function sceneInit() {
 
             goToPlanet(planet);
         }
+        if(isAdding && planeIntersects.length>0){
+            var geometry = new THREE.SphereGeometry(30,100,100);
+            var material = new THREE.MeshLambertMaterial( {
+                color: 0x117ab3} );
+            tempPlanet = new THREE.Mesh( geometry, material );
+            tempPlanet.position.set(planeIntersects[0].point.x,planeIntersects[0].point.y,-500);
+            scene.add(tempPlanet);
+            //isAdding=false;
+            //creatingPlanet=true;
+            scene.remove(planeAddingIntersect[0]);
+            planeAddingIntersect=[];
+            controls.target = tempPlanet.position;
+            previousCameraTarget.hasCamera=false;
+            loadNewPlanetGUI();
+        }
     }
 
-
-
-    function onDocumentKeyDown(event) {
-        var keyCode = event.which;
-
-        // 'D'
-        if (keyCode === 68)
-            animationVelocity -= 1;
-        // 'F'
-        else if (keyCode === 70)
-            animationVelocity += 1;
-    }
     return scene;
 }
 
@@ -105,6 +81,7 @@ function dispose(){
 }
 
 function animateScene(){
+    timePassed++;
     for(var j=0;j<animationVelocity;j++) {
         for (var i = 0; i < planets.length; i++) {
             planets[i].applyGravity(planets, i);
@@ -117,11 +94,8 @@ function loadPlanetsScene1(){
     //PLANETS
     planets.push(new Planet(700, 50, 0, 0, 0, "Sun"));//down to 10 from 100
     controls.target = planets[0].sphere.position;
-    spheresIntersection.push(planets[0].clickableSphere);
     planets.push(new Planet(10, 20, 1000, 0, 15, "Earth"));
-    spheresIntersection.push(planets[1].clickableSphere);
     planets.push(new Planet(15, 30, 1558, 0, 0, "Earth-2"));
-    spheresIntersection.push(planets[2].clickableSphere);
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
     planets[0].isSun=true;
@@ -157,64 +131,7 @@ function loadPlanetsScene1(){
     loadPlanetListGUI();
     loadTtimeGUI();
     loadConfigurationGUI();
+    loadAddPlanetButton();
 
     return this.scene;
-}
-
-function loadTtimeGUI() {
-    var timeFolder = mainGUI.addFolder('Time controller');
-    timeFolder.open();
-
-    var configVariable = new function () {
-        this.timeSpeed = animationVelocity;
-    };
-    var playButton = {
-        Play: function () {
-            animationVelocity = configVariable.timeSpeed;
-        }
-    };
-    var stopButton = {
-        Stop: function () {
-            animationVelocity = 0;
-
-        }
-    };
-    var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
-    timeFolder.add(playButton, 'Play');
-    timeFolder.add(stopButton, 'Stop');
-    timeSpeedController.onFinishChange(function (value) {
-        animationVelocity=value;
-    });
-}
-//Configuration GUI
-function loadConfigurationGUI() {
-    var configVariable = new function () {
-        this.trackLength = trackLength;
-        this.trackActivated = trackActivated;
-        this.timeSpeed = animationVelocity;
-        this.shadows = true;
-    };
-    configurationFolder = mainGUI.addFolder('Configuration');
-    var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
-    var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
-    var shadowsController = configurationFolder.add(configVariable, 'shadows').name('Shadows');
-
-    lengthController.onFinishChange(function(value){
-        trackLength = value;
-    });
-    trackActivatedController.onFinishChange(function (value) {
-        trackActivated=value;
-        for(var i=0;i<planets.length;i++){
-            planets[i].eraseTrack();
-        }
-    });
-    shadowsController.onFinishChange(function (value) {
-       for(var i=0;i<planets.length;i++) {
-           if (!planets[i].isSun) {
-               planets[i].sphere.receiveShadow = value;
-               planets[i].sphere.castShadow = value;
-               planets[i].needsUpdate = true;
-           }
-       }
-    });
 }

@@ -14,10 +14,9 @@
         <script src="js/examples/js/controls/OrbitControls.js"></script>
         <script src="js/examples/js/renderers/Projector.js"></script>
         <script type="text/javascript" src="dat.gui-0.6.5/build/dat.gui.js"></script>
-        <script src="GUI.js"></script>
-        <script src="Level.js"></script>
-        <script src="Planet.js"></script>
-        <div id = "gui"></div>
+        <script type="text/javascript" src="Level.js"></script>
+        <script type="text/javascript" src="Planet.js"></script>
+        <script type="text/javascript" src="GUI.js"></script>
             <script>
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -29,6 +28,7 @@
                 var scene1Loaded = true;
 
                 //For the interactions
+                var raycasterPlanets = new THREE.Raycaster();
                 var animationVelocity=1;
                 var spheresIntersection=[];
                 var planets = [];
@@ -40,10 +40,20 @@
                 var trackActivated = true;
                 var trackLength = 100;
 
+                //Time GUI
+                var timePassed=0;
+
                 //List of planets GUI
                 var mainGUI;
                 var planetFolder;
                 var controllerArray;
+
+                //Add planets
+                var raycasterPlane = new THREE.Raycaster();
+                var addPlanetGUI;
+                var planeAddingIntersect = [];
+                var tempPlanet;
+                var isAdding=false;
 
                 //Load scene 1
                 var level = new Level();
@@ -54,7 +64,7 @@
 
                     if(scene1Loaded)
                         level.animateScene();
-
+                  //  console.log(timePassed);
                     requestAnimationFrame(render);
                     renderer.render(scene, camera);
                 };
