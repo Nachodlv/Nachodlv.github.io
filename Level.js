@@ -3,7 +3,7 @@ function Level(){
     this.animateScene = animateScene;
     this.loadPlanetsScene1 = loadPlanetsScene1;
     this.scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000000);
     camera.position.set(0, 0, 1700);
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);

@@ -52,10 +52,11 @@ function update() {
 
         //creates track
         if(trackActivated) {
-            var track = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color: this.colorTrack}));
-            track.position.x = this.sphere.position.x;
-            track.position.y = this.sphere.position.y;
-            track.position.z = this.sphere.position.z;
+            var material = new THREE.LineBasicMaterial({ color: this.colorTrack });
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z));
+            geometry.vertices.push(new THREE.Vector3(this.sphere.position.x+1,this.sphere.position.y+1,this.sphere.position.z+1));
+            var track = new THREE.Line(geometry, material);
             scene.add(track);
             this.tracks[this.tracks.length] = track;
             while(this.tracks.length>trackLength){

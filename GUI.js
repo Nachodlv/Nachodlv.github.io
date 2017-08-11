@@ -123,6 +123,7 @@ function loadNewPlanetGUI(){
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);
+            scene.remove(angleLine);
             planets[planets.length]=planet;
             refreshPlanetListGUI();
             isAdding=false;
@@ -134,6 +135,7 @@ function loadNewPlanetGUI(){
         Cancel: function () {
             addPlanetGUI.destroy();
             scene.remove(tempPlanet);
+            scene.remove(angleLine);
             isAdding=false;
             goToPlanet(previousCameraTarget);
         }
@@ -141,12 +143,26 @@ function loadNewPlanetGUI(){
     addPlanetGUI.add(planetInfo,'name').name('Name');
     addPlanetGUI.add(planetInfo,'mass').name('Mass');
     var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius');
-    addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle');
+    var angleController = addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle');
     addPlanetGUI.add(createPlanetButton,'CreatePlanet').name('Create planet');
     addPlanetGUI.add(cancelButton, 'Cancel');
 
     radiusController.onFinishChange(function (value) {
         var scale = value/initialRadius;
         tempPlanet.scale.set(scale,scale,scale);
+    });
+    angleController.onFinishChange(function (value) {
+        scene.remove(angleLine);
+        var scale = tempPlanet.position.distanceTo(camera.position)/5;
+        var vector3 = new THREE.Vector3(0,0,0);
+        vector3.z = scale * value/90;
+        vector3.y = scale-vector3.z;
+
+        var material = new THREE.LineBasicMaterial({ color: 0xff0000});
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x,tempPlanet.position.y,tempPlanet.position.z));
+        geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x + vector3.x, tempPlanet.position.y + vector3.y, tempPlanet.position.z + vector3.z));
+        angleLine = new THREE.Line(geometry, material);
+        scene.add(angleLine);
     })
 }

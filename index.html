@@ -7,6 +7,7 @@
 </head>
     <body>
         <script src="js/build/three.js"></script>
+        <script src="js/stats.js"></script>
         <script src="js/src/geometries/ShapeGeometry.js"></script>
         <script src="js/src/geometries/TextGeometry.js"></script>
         <script src="js/examples/js/shaders/UnpackDepthRGBAShader.js"></script>
@@ -22,6 +23,10 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(renderer.domElement);
                 renderer.setClearColor(0x000000);
+
+                var stats = new Stats();
+                stats.showPanel( 0 );
+                document.body.appendChild( stats.dom );
 
                 var scene;
                 var camera;
@@ -54,6 +59,7 @@
                 var planeAddingIntersect = [];
                 var tempPlanet;
                 var isAdding=false;
+                var angleLine;
 
                 //Load scene 1
                 var level = new Level();
@@ -61,10 +67,11 @@
                 level.sceneInit();
 
                 var render = function () {
-
+                    stats.begin();
                     if(scene1Loaded)
                         level.animateScene();
                   //  console.log(timePassed);
+                    stats.end();
                     requestAnimationFrame(render);
                     renderer.render(scene, camera);
                 };
