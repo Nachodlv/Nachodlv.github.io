@@ -85,10 +85,10 @@ function animateScene(){
 
 function loadPlanetsScene1(){
     //PLANETS
-    planets.push(new Planet(700, 50, 0, 0, 0, "Sun"));//down to 10 from 100
+    planets.push(new Planet(700000.5, 50, 0, 0, 0, "Sun"));//down to 10 from 100
     controls.target = planets[0].sphere.position;
-    planets.push(new Planet(10, 20, 1000, 0, 15, "Earth"));
-    planets.push(new Planet(15, 30, 1558, 0, 0, "Earth-2"));
+    planets.push(new Planet(100.1, 20, 1000, 0, 15, "Earth"));
+    planets.push(new Planet(105.2, 30, 1558, 0, 0, "Earth-2"));
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
     planets[0].isSun=true;

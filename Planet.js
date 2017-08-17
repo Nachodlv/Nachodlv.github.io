@@ -84,19 +84,31 @@ function update() {
     //update the info of the gui
     //Move to openGUI
     if(this.guiOpen){
-        this.mass=this.planetModificationGUI.planetMass;
+        this.name=this.planetModificationGUI.planetName;
         this.sphereScale = this.planetModificationGUI.planetRadius/this.radiusGUI;
         this.sphere.scale.x = this.sphere.scale.y = this.sphere.scale.z = this.sphereScale;
-        this.radius = this.planetModificationGUI.planetRadius;
-        this.name = this.planetModificationGUI.planetName;
+        var tempRadius = parseFloat(this.planetModificationGUI.planetRadius);
+        var tempMass = parseFloat(this.planetModificationGUI.planetMass);
+        if(!isNaN(tempRadius && tempRadius>0)){
+            this.radius = tempRadius;
+        }else{
+            this.planetModificationGUI.planetRadius = this.radius;
+            this.infoPlanetGUI.updateDisplay();
+        }
+        if(!isNaN(tempMass) && tempMass>0) {
+            this.mass = tempMass;
+        }else{
+            this.planetModificationGUI.planetMass = this.mass;
+            this.infoPlanetGUI.updateDisplay();
+        }
     }
 }
 
 function openGui(){
     var planet = this;
     var planetModificationGUI = new function () {
-        this.planetMass = planet.mass;
-        this.planetRadius = planet.radius;
+        this.planetMass = planet.mass.toString();
+        this.planetRadius = planet.radius.toString();
         this.planetName = planet.name;
     };
     var destroyButton = {
@@ -144,9 +156,9 @@ function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
     var number = -(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //needs to be multiplied by G
-    gravity[0] = number * direction[0];
-    gravity[1] = number * direction[1];
-    gravity[2] = number * direction[2];
+    gravity[0] = number * direction[0]/planet.mass;
+    gravity[1] = number * direction[1]/planet.mass;
+    gravity[2] = number * direction[2]/planet.mass;
     this.velocity[0] += gravity[0]; //there's probably a better way of doing this
     this.velocity[1] += gravity[1];
     this.velocity[2] += gravity[2];
