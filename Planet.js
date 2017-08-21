@@ -27,7 +27,7 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.hasCamera = false;
     this.tracks = [];
     this.colorTrack  =  Math.random() * 0xffffff;
-    var totalVelocity = 2.5; //we have to tweak this values
+    var totalVelocity = 0.03; //Mm per second
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
     this.velocity = [0, yVelocity, zVelocity];
@@ -155,7 +155,7 @@ function applyGravity(planets, index){
 function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
-    var number = -(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //needs to be multiplied by G
+    var number = -(6.67408e-29)*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
     gravity[0] = number * direction[0]/planet.mass;
     gravity[1] = number * direction[1]/planet.mass;
     gravity[2] = number * direction[2]/planet.mass;

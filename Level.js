@@ -82,13 +82,16 @@ function animateScene(){
         }
     }
 }
-
+//UNITS
+//weight kg
+//length Mm (1000km = 1Mm)
+//time s
 function loadPlanetsScene1(){
     //PLANETS
-    planets.push(new Planet(700000.5, 50, 0, 0, 0, "Sun"));//down to 10 from 100
+    planets.push(new Planet(1.98855e30, 695.7, 0, 0, 0, "Sun"));
     controls.target = planets[0].sphere.position;
-    planets.push(new Planet(100.1, 20, 1000, 0, 15, "Earth"));
-    planets.push(new Planet(105.2, 30, 1558, 0, 0, "Earth-2"));
+    planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 15, "Earth"));
+    planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 0, "Earth-2"));
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
     planets[0].isSun=true;
