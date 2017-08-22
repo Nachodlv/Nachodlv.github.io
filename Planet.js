@@ -21,12 +21,18 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.applyGravityOfOnePlanet = applyGravityOfOnePlanet;
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
+
+    this.tracks = [];
+    this.tracksPerFrame=2;
+    this.currentFrame=0;
+    this.changeTracksPerFrame = changeTracksPerFrame;
+    this.previousTrackPosition = new THREE.Vector3(xPosition,yPosition,-500);
     this.eraseTrack = eraseTrack;
+    this.colorTrack  =  Math.random() * 0xffffff;
+
     this.destroy = destroy;
     this.update = update;
     this.hasCamera = false;
-    this.tracks = [];
-    this.colorTrack  =  Math.random() * 0xffffff;
     var totalVelocity = 0.03; //Mm per second
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
@@ -51,11 +57,13 @@ function update() {
         }
 
         //creates track
-        if(trackActivated) {
+        this.currentFrame++;
+        if(trackActivated && this.currentFrame>this.tracksPerFrame) {
             var material = new THREE.LineBasicMaterial({ color: this.colorTrack });
             var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z));
-            geometry.vertices.push(new THREE.Vector3(this.sphere.position.x+1,this.sphere.position.y+1,this.sphere.position.z+1));
+            geometry.vertices.push(new THREE.Vector3(this.previousTrackPosition.x, this.previousTrackPosition.y, this.previousTrackPosition.z));
+            geometry.vertices.push(this.sphere.position);
+            this.previousTrackPosition = this.sphere.position;
             var track = new THREE.Line(geometry, material);
             scene.add(track);
             this.tracks[this.tracks.length] = track;
@@ -63,6 +71,7 @@ function update() {
                 scene.remove(this.tracks[0]);
                 this.tracks.splice(0, 1);
             }
+            this.currentFrame=0;
         }
 
         //moves the planet
@@ -192,4 +201,8 @@ function destroy(){
             return;
         }
     }
+}
+
+function changeTracksPerFrame(value){
+    this.counterForTracks = value*2;
 }

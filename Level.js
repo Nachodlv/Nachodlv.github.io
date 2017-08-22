@@ -7,6 +7,7 @@ function Level(){
     camera.position.set(0, 0, 1700);
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableKeys = false;
     controls.addEventListener('change', render);
     controls.maxDistance = 20000;
     /*controls.enabled=false;
@@ -20,6 +21,7 @@ function goToPlanet(planet){
     controls.target = planet.sphere.position;
     planet.hasCamera = true;
     planet.openGUI();
+    camera.position.set(planet.sphere.position.x, planet.sphere.position.y, planet.radius);
     controls.update();
 }
 
@@ -30,6 +32,15 @@ function sceneInit() {
     document.addEventListener('mousedown', onDocumentMouseDown, false);
 
     previousCameraTarget = planets[0];
+
+    //Prevent using arrow keys and space to scroll the page
+    document.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false);
+
     function onDocumentMouseDown(event) {
         mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
         mouse.y = -( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
@@ -117,7 +128,7 @@ function loadPlanetsScene1(){
             color: 0xffd700, transparent: false, blending: THREE.AdditiveBlending
         });
     var sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(200, 200, 1.0);
+    sprite.scale.set(3000, 3000, 1);
     planets[0].sphere.add(sprite);
 
     //Main GUI

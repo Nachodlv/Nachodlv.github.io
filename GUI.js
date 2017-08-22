@@ -47,6 +47,9 @@ function loadTtimeGUI() {
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
+        for(var i=0;i<planets.length();i++){
+            planets[i].changeTracksPerFrame(value);
+        }
     });
     customSpeedController.onFinishChange(function (value) {
        for(var i=0;i<value;i++){
