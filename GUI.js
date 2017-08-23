@@ -40,21 +40,25 @@ function loadTtimeGUI() {
 
         }
     };
+    var timePassedButton = {
+        Button: function () {
+            for(var i=0;i<configVariable.customSpeed;i++){
+                level.animateScene();
+            }
+        }
+    };
+
     var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
     timeFolder.add(playButton, 'Play');
     timeFolder.add(stopButton, 'Stop');
     var customSpeedController = timeFolder.add(configVariable, 'customSpeed').name('Time passed');
+    timeFolder.add(timePassedButton, 'Button').name('Pass Time');
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
         for(var i=0;i<planets.length();i++){
             planets[i].changeTracksPerFrame(value);
         }
-    });
-    customSpeedController.onFinishChange(function (value) {
-       for(var i=0;i<value;i++){
-           level.animateScene();
-       }
     });
 
 }
@@ -65,11 +69,14 @@ function loadConfigurationGUI() {
         this.trackActivated = trackActivated;
         this.timeSpeed = animationVelocity;
         this.shadows = true;
+        this.zoomSpeed = controls.zoomSpeed;
     };
+
     configurationFolder = mainGUI.addFolder('Configuration');
     var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
     var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
     var shadowsController = configurationFolder.add(configVariable, 'shadows').name('Shadows');
+    var zoomSpeedController = configurationFolder.add(configVariable, 'zoomSpeed',1).name('Zoom Speed');
 
     lengthController.onFinishChange(function(value){
         trackLength = value;
@@ -89,6 +96,9 @@ function loadConfigurationGUI() {
             }
         }
     });
+    zoomSpeedController.onFinishChange(function (value) {
+        controls.zoomSpeed=value;
+    })
 }
 
 function refreshPlanetListGUI(){
