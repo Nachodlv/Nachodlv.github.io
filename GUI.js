@@ -111,10 +111,10 @@ function loadPlanetListGUI(){
 }
 
 function loadNewPlanetGUI(){
-    var initialRadius = 30;
+    var initialRadius = 5;
     var planetInfo = new function () {
         this.name = "New Planet";
-        this.mass = 100;
+        this.mass = 5e24;
         this.radius = initialRadius;
         this.angle = 0;
     };

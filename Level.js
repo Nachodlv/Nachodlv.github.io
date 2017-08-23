@@ -9,7 +9,7 @@ function Level(){
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableKeys = false;
     controls.addEventListener('change', render);
-    controls.maxDistance = 20000;
+    controls.maxDistance = 20000000;
     /*controls.enabled=false;
      controls.enableZoom=true;*/
 }
@@ -99,10 +99,10 @@ function animateScene(){
 //time s
 function loadPlanetsScene1(){
     //PLANETS
-    planets.push(new Planet(1.98855e30, 695.7, 0, 0, 0, "Sun"));
+    planets.push(new Planet(1.98855e30, 695.7, 0, 0, 0, "Sun", true));
     controls.target = planets[0].sphere.position;
-    planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 15, "Earth"));
-    planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 0, "Earth-2"));
+    planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 15, "Earth", false));
+    planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 0, "Earth-2", false));
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
     planets[0].isSun=true;

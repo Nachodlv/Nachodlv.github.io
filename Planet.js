@@ -1,10 +1,10 @@
-function Planet(mass, radius, xPosition, yPosition, angle, name){
+function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     this.mass=mass;
     this.radius=radius;
     this.name = name;
     var geometry = new THREE.SphereGeometry(radius,100,100);
     var material = new THREE.MeshLambertMaterial( {
-        color: 0x117ab3} );
+        color: Math.random() * 0xffffff} );
     this.sphere = new THREE.Mesh( geometry, material );
 
     this.sphere.castShadow=true;
@@ -36,8 +36,35 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.destroy = destroy;
     this.update = update;
     this.hasCamera = false;
+
+    this.isSun=isSun;
+    this.sphereScale=1;
+
+    this.velocityConstant = 1;
+
+    this.G = 6.67408e-29;
+
+    this.gSeconds = 6.67408e-29;
+    this.gMinutes = 2.4026688e-25;
+    this.gHour = 8.64960768e-22;
+    this.gDays = 4.982174024e-19;
+
+    //velocity
+    if (!this.isSun){
+        for (var i = 0; i < planets.length; i++) {
+            if (planets[i].isSun) {
+                this.hostStar = planets[i];
+            }
+        }
+        var distanceFromSun = this.calculateDistance(this.hostStar);
+        var directionFromSun = this.calculateDistance(this.hostStar);
+        var totalVelocity = Math.sqrt((this.G*this.hostStar.mass)/distanceFromSun);
+
+        totalVelocity = totalVelocity*this.velocityConstant;
+    }
+
     //var totalVelocity = 0.03; //Mm per second
-    var totalVelocity = 108; //Mm per hour
+    //var totalVelocity = 108; //Mm per hour
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
     this.velocity = [0, yVelocity, zVelocity];
@@ -47,11 +74,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.infoPlanetGUI = null;
     this.guiOpen = false;
     this.planetModificationGUI=null;
-    this.isSun=false;
-    this.sphereScale=1;
-
-    this.gSeconds = 6.67408e-29;
-    this.gHour = 8.64960768e-22;
 }
 
 function update() {
@@ -165,7 +187,7 @@ function applyGravity(planets, index){
 function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
-    var number = -this.gHour*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
+    var number = -this.G*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
     gravity[0] = number * direction[0]/this.mass;
     gravity[1] = number * direction[1]/this.mass;
     gravity[2] = number * direction[2]/this.mass;
