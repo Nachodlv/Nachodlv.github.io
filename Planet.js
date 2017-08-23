@@ -22,19 +22,22 @@ function Planet(mass, radius, xPosition, yPosition, angle, name){
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
 
-    this.tracks = [];
+
+    this.colorTrack  =  Math.random() * 0xffffff;
+    this.materialTrack = new THREE.LineBasicMaterial({ color: this.colorTrack });
+    this.vertices = [];
+    this.line = new THREE.Line();
     this.tracksPerFrame=2;
     this.currentFrame=0;
+    this.tracks = new THREE.Line();
     this.changeTracksPerFrame = changeTracksPerFrame;
-    this.previousTrackPosition = new THREE.Vector3(xPosition,yPosition,-500);
     this.eraseTrack = eraseTrack;
-    this.colorTrack  =  Math.random() * 0xffffff;
 
     this.destroy = destroy;
     this.update = update;
     this.hasCamera = false;
-    var totalVelocity = 0.03; //Mm per second
-    //var totalVelocity = 108; //Mm per hour
+    //var totalVelocity = 0.03; //Mm per second
+    var totalVelocity = 108; //Mm per hour
     var zVelocity = totalVelocity * (angle/90);
     var yVelocity = totalVelocity-zVelocity;
     this.velocity = [0, yVelocity, zVelocity];
@@ -63,18 +66,15 @@ function update() {
         //creates track
         this.currentFrame++;
         if(trackActivated && this.currentFrame>this.tracksPerFrame) {
-            var material = new THREE.LineBasicMaterial({ color: this.colorTrack });
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(new THREE.Vector3(this.previousTrackPosition.x, this.previousTrackPosition.y, this.previousTrackPosition.z));
-            geometry.vertices.push(this.sphere.position);
-            this.previousTrackPosition = this.sphere.position;
-            var track = new THREE.Line(geometry, material);
-            scene.add(track);
-            this.tracks[this.tracks.length] = track;
-            while(this.tracks.length>trackLength){
-                scene.remove(this.tracks[0]);
-                this.tracks.splice(0, 1);
+            var geometryTrack = new THREE.Geometry();
+            this.vertices.push(new THREE.Vector3(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z));
+            while(this.vertices.length>trackLength){
+                this.vertices.splice(0, 1);
             }
+            geometryTrack.vertices = this.vertices;
+            scene.remove(this.track);
+            this.track = new THREE.Line(geometryTrack, this.materialTrack);
+            scene.add(this.track);
             this.currentFrame=0;
         }
 
@@ -90,7 +90,7 @@ function update() {
     }
 
     //update the size of the clickable sphere
-    var scale = this.clickableSphere.position.distanceTo(camera.position)/1000 + this.radius/100 ;
+    var scale = this.clickableSphere.position.distanceTo(camera.position)/1e12 + this.radius/100 ;
     scale = Math.max(1, scale);
     this.clickableSphere.scale.set(scale,scale,scale);
 
@@ -151,10 +151,7 @@ function closeGUI(){
 }
 
 function eraseTrack(){
-    for(var i=0;i<this.tracks.length;i++){
-        scene.remove(this.tracks[i]);
-    }
-    this.tracks = [];
+    scene.remove(this.track);
 }
 
 function applyGravity(planets, index){
@@ -168,10 +165,10 @@ function applyGravity(planets, index){
 function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
-    var number = -this.gSeconds*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
-    gravity[0] = number * direction[0]/planet.mass;
-    gravity[1] = number * direction[1]/planet.mass;
-    gravity[2] = number * direction[2]/planet.mass;
+    var number = -this.gHour*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
+    gravity[0] = number * direction[0]/this.mass;
+    gravity[1] = number * direction[1]/this.mass;
+    gravity[2] = number * direction[2]/this.mass;
     this.velocity[0] += gravity[0]; //there's probably a better way of doing this
     this.velocity[1] += gravity[1];
     this.velocity[2] += gravity[2];

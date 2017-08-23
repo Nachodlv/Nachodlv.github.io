@@ -5,7 +5,7 @@ function loadAddPlanetButton(){
                 return;
             }
             isAdding=true;
-            var geometry = new THREE.PlaneGeometry(10000,10000,32,32);
+            var geometry = new THREE.PlaneGeometry(1e6,1e6,32,32);
             var material = new THREE.MeshBasicMaterial( {
                 color: 0x117ab3} );
             material.side = THREE.DoubleSide;
