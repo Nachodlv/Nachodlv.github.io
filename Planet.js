@@ -22,7 +22,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
 
-
     this.colorTrack  =  Math.random() * 0xffffff;
     this.materialTrack = new THREE.LineBasicMaterial({ color: this.colorTrack });
     this.vertices = [];
@@ -110,7 +109,7 @@ function update() {
     }
 
     //update the size of the clickable sphere
-    var scale = this.clickableSphere.position.distanceTo(camera.position)/1e12 + this.radius/100 ;
+    var scale = this.clickableSphere.position.distanceTo(camera.position)/100;
     scale = Math.max(1, scale);
     this.clickableSphere.scale.set(scale,scale,scale);
 
@@ -153,8 +152,8 @@ function openGui(){
     this.planetModificationGUI=planetModificationGUI;
     this.infoPlanetGUI = new dat.GUI();
     var nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'planetName').name('Name');
-    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetMass' , 1 ).name('Mass');
-    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1) .name('Radius');
+    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetMass' , 1 ).name('Mass (kg)');
+    this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1) .name('Radius (Mm)');
     this.infoPlanetGUI.add({Destroy: destroyButton.Destroy.bind(this)},'Destroy');
     this.guiOpen=true;
     nameController.onFinishChange(function(value) {

@@ -70,6 +70,7 @@ function sceneInit() {
             tempPlanet.position.set(planeIntersects[0].point.x,planeIntersects[0].point.y,planeAddingIntersect[0].position.z);
             scene.add(tempPlanet);
             scene.remove(planeAddingIntersect[0]);
+            scene.remove(planeAddingIntersect[1]);
             planeAddingIntersect=[];
             controls.target = tempPlanet.position;
             previousCameraTarget.hasCamera=false;

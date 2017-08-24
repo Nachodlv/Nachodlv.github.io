@@ -6,15 +6,22 @@ function loadAddPlanetButton(){
             }
             isAdding=true;
             var geometry = new THREE.PlaneGeometry(1e6,1e6,32,32);
+            var geometry2 = new THREE.PlaneGeometry(1e6,300,32,32);
             var material = new THREE.MeshBasicMaterial( {
                 color: 0x117ab3} );
             material.side = THREE.DoubleSide;
             material.wireframe=true;
+            var material2 = new THREE.MeshBasicMaterial({ color: 0xFF0000});
+            material2.side = THREE.DoubleSide;
             var planeAdding = new THREE.Mesh( geometry, material );
+            var plane2Adding = new THREE.Mesh(geometry2, material2);
             planeAdding.position.set(0,0,-500);
+            plane2Adding.position.set(0,0,-500);
             planeAdding.rotateZ(90);
             scene.add(planeAdding);
+            scene.add(plane2Adding);
             planeAddingIntersect[0]=planeAdding;
+            planeAddingIntersect[1]=plane2Adding;
         }
     };
     mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet');
@@ -202,9 +209,9 @@ function loadNewPlanetGUI(){
         }
     };
     addPlanetGUI.add(planetInfo,'name').name('Name');
-    addPlanetGUI.add(planetInfo,'mass').name('Mass');
-    var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius');
-    var angleController = addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle');
+    addPlanetGUI.add(planetInfo,'mass').name('Mass (kg)');
+    var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius (Mm)');
+    var angleController = addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle (Degrees)');
     addPlanetGUI.add(createPlanetButton,'CreatePlanet').name('Create planet');
     addPlanetGUI.add(cancelButton, 'Cancel');
 
