@@ -44,10 +44,10 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
 
     this.G = 6.67408e-29;
 
-    this.gSeconds = 6.67408e-29;
-    this.gMinutes = 2.4026688e-25;
-    this.gHour = 8.64960768e-22;
-    this.gDays = 4.982174024e-19;
+    //this.gSeconds = 6.67408e-29;
+    //this.gMinutes = 2.4026688e-25;
+    //this.gHour = 8.64960768e-22;
+    //this.gDays = 4.982174024e-19;
 
     //velocity
     if (!this.isSun){
@@ -59,8 +59,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
         var distanceFromSun = this.calculateDistance(this.hostStar);
         var directionFromSun = this.calculateDistance(this.hostStar);
         var totalVelocity = Math.sqrt((this.G*this.hostStar.mass)/distanceFromSun);
-
-        totalVelocity = totalVelocity*this.velocityConstant;
     }
 
     //var totalVelocity = 0.03; //Mm per second
