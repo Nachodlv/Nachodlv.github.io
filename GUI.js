@@ -56,13 +56,12 @@ function loadTtimeGUI() {
         }
     };
 
+    var timeConfigurationController = timeFolder.add(configVariable, 'timeOptions', ["Seconds", "Minutes", "Hours", "Days"]).name('Time Unit');
     var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
     timeFolder.add(playButton, 'Play');
     timeFolder.add(stopButton, 'Stop');
     var customSpeedController = timeFolder.add(configVariable, 'customSpeed').name('Time passed');
     timeFolder.add(timePassedButton, 'Button').name('Pass Time');
-    var timeConfigurationController = timeFolder.add(configVariable, 'timeOptions', ["Seconds", "Minutes", "Hours", "Days"]).name('Time Unit');
-    configVariable.timeOptions = "Seconds";
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
