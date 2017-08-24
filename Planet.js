@@ -39,9 +39,9 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     this.isSun=isSun;
     this.sphereScale=1;
 
-    this.velocityConstant = 1;
+    this.velocityConstant = velocityConstant;
 
-    this.G = 6.67408e-29;
+    this.G = G;
 
     //this.gSeconds = 6.67408e-29;
     //this.gMinutes = 2.4026688e-25;

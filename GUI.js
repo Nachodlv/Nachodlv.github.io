@@ -82,6 +82,8 @@ function loadTtimeGUI() {
                     planets[i].velocity[2] = planets[i].velocity[2]*(planets[i].velocityConstant/temp1);
                     planets[i].G = 6.67408e-29;
                 }
+                G = 6.67408e-29;
+                velocityConstant = 1;
                 break;
             case "Minutes":
                 for(var j=0;j<planets.length;j++){
@@ -92,6 +94,8 @@ function loadTtimeGUI() {
                     planets[j].velocity[2] = planets[j].velocity[2]*(planets[j].velocityConstant/temp2);
                     planets[j].G = 2.4026688e-25;
                 }
+                G = 2.4026688e-25;
+                velocityConstant = 60;
                 break;
             case "Hours":
                 for(var k=0;k<planets.length;k++){
@@ -102,6 +106,8 @@ function loadTtimeGUI() {
                     planets[k].velocity[2] = planets[k].velocity[2]*(planets[k].velocityConstant/temp3);
                     planets[k].G = 8.64960768e-22;
                 }
+                G = 8.64960768e-22;
+                velocityConstant = 3600;
                 break;
             case "Days":
                 for(var l=0;l<planets.length;l++){
@@ -112,6 +118,8 @@ function loadTtimeGUI() {
                     planets[l].velocity[2] = planets[l].velocity[2]*(planets[l].velocityConstant/temp4);
                     planets[l].G = 4.982174024e-19;
                 }
+                G = 8.64960768e-22;
+                velocityConstant = 86400;
                 break;
         }
     });
