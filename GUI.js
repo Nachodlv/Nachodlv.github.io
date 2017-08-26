@@ -117,7 +117,7 @@ function loadTtimeGUI() {
                     planets[l].velocity[2] = planets[l].velocity[2]*(planets[l].velocityConstant/temp4);
                     planets[l].G = 4.982174024e-19;
                 }
-                G = 8.64960768e-22;
+                G = 4.982174024e-19;
                 velocityConstant = 86400;
                 break;
         }
