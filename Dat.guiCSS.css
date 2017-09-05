@@ -30,6 +30,9 @@ body .dg.main .close-button:hover {
     background-color: #eee;
 }
 
+/*
+    Text
+ */
 body .dg {
     color: #555;
     text-shadow: none !important;
@@ -44,7 +47,9 @@ body .dg.main::-webkit-scrollbar-thumb {
 }
 
 body .dg li:not(.folder) {
+    /* background of everything expect buttons */
     background: #fafafa;
+    /* border */
     border-bottom: 1px solid #ddd;
 }
 
@@ -53,6 +58,7 @@ body .dg li.save-row .button {
 }
 
 body .dg li.title {
+    /*color folders*/
     background: #e8e8e8 url(data:image/gif;base64,R0lGODlhBQAFAJEAAP////Pz8////////yH5BAEAAAIALAAAAAAFAAUAAAIIlI+hKgFxoCgAOw==) 6px 10px no-repeat;
 }
 
@@ -78,6 +84,7 @@ body .dg .c input[type=text]:focus {
     color: #555;
 }
 
+/*Background slider*/
 body .dg .c .slider {
     background: #e9e9e9;
 }
@@ -96,11 +103,15 @@ body .dg .cr.function {
 }
 
 body .dg .cr.function:hover {
+    /*Color when hover things*/
     background: #dadada;
+    /*Color underline when hover*/
     border-bottom: 1px solid #2fa1d6;
 }
 
 body .dg .cr.function:active {
+    /*color when click*/
     background: #ddd;
+    /*color underline when click*/
     border-bottom: 1px solid #2fa1d6;
 }
