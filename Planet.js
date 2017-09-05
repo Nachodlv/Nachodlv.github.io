@@ -34,6 +34,9 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
 
     this.destroy = destroy;
     this.update = update;
+
+    this.targetOfCamera = targetOfCamera;
+    this.looseCamera = looseCamera;
     this.hasCamera = false;
 
     this.isSun=isSun;
@@ -71,6 +74,9 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     this.infoPlanetGUI = null;
     this.guiOpen = false;
     this.planetModificationGUI=null;
+
+    //circle around the planet
+    this.circle = createCircleAroundPlanet();
 }
 
 function update() {
@@ -80,6 +86,11 @@ function update() {
             camera.position.x += this.velocity[0];
             camera.position.y += this.velocity[1];
             camera.position.z += this.velocity[2];
+
+            //Circle around the planet, only when it has the camera
+            var circleScale = this.sphere.position.distanceTo(camera.position)/20;
+            this.circle.scale.set(circleScale, circleScale, circleScale);
+            this.circle.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
         }
 
         //creates track
@@ -223,6 +234,23 @@ function destroy(){
     }
 }
 
+function targetOfCamera(){
+    this.hasCamera = true;
+    this.openGUI();
+    scene.add(this.circle);
+}
+
+function looseCamera(){
+    this.closeGUI();
+    scene.remove(this.circle);
+}
+
 function changeTracksPerFrame(value){
     this.counterForTracks = value*2;
+}
+
+function createCircleAroundPlanet(){
+    var spriteMap = new THREE.TextureLoader().load( 'images/Ring.png' );
+    var material = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+    return new THREE.Sprite( material );
 }

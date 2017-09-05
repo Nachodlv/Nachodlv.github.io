@@ -1,1 +1,18 @@
-#gui { top: 1000em; left: 0 }
+.menu
+{
+    margin: 100px 0px 0px 0px;
+}
+.btn{
+    border: none; /* Remove borders */
+    color: white; /* Add a text color */
+    cursor: pointer; /* Add a pointer cursor on mouse-over */
+    /*padding: 15px 15px;*/ /* Add some padding */
+    background-color: #2196F3;
+    width: 150px;
+    height: 50px;
+}
+.btn:hover {background: #0b7dda;}
+
+.SandboxImage {
+    width: 25%;
+}

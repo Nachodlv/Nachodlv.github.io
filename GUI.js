@@ -62,6 +62,7 @@ function loadTtimeGUI() {
     timeFolder.add(stopButton, 'Stop');
     var customSpeedController = timeFolder.add(configVariable, 'customSpeed').name('Time passed');
     timeFolder.add(timePassedButton, 'Button').name('Pass Time');
+    //configVariable.timeOptions = "Seconds";
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
@@ -135,6 +136,7 @@ function loadConfigurationGUI() {
     };
 
     configurationFolder = mainGUI.addFolder('Configuration');
+    configurationFolder.open();
     var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
     var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
     var shadowsController = configurationFolder.add(configVariable, 'shadows').name('Shadows');
@@ -240,4 +242,18 @@ function loadNewPlanetGUI(){
         angleLine = new THREE.Line(geometry, material);
         scene.add(angleLine);
     })
+}
+
+function backAndResetGUI(){
+
+    var Buttons = {
+        goBackButton: function () {
+            window.location.href = "index.html";
+        },
+        resetButton: function () {
+            window.location.href = "PlaceHolder.html"
+        }
+    };
+    mainGUI.add(Buttons, 'resetButton').name("Reset");
+    mainGUI.add(Buttons, 'goBackButton').name("Menu");
 }

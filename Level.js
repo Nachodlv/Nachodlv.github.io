@@ -17,11 +17,10 @@ function Level(){
 
 function goToPlanet(planet){
     previousCameraTarget.hasCamera = false;
-    if(previousCameraTarget.guiOpen) previousCameraTarget.closeGUI();
+    if(previousCameraTarget.guiOpen) previousCameraTarget.looseCamera();
     previousCameraTarget = planet;
     controls.target = planet.sphere.position;
-    planet.hasCamera = true;
-    planet.openGUI();
+    planet.targetOfCamera();
     camera.position.set(planet.sphere.position.x, planet.sphere.position.y, planet.radius);
     controls.update();
 }
@@ -125,7 +124,7 @@ function loadPlanetsScene1(){
     planets[0].sphere.material = new THREE.MeshBasicMaterial({color: 0xffd700});
     var spriteMaterial = new THREE.SpriteMaterial(
         {
-            map: new THREE.ImageUtils.loadTexture('images/glow.png'),
+            map: new THREE.TextureLoader().load('images/glow.png'),
             color: 0xffd700, transparent: false, blending: THREE.AdditiveBlending
         });
     var sprite = new THREE.Sprite(spriteMaterial);
@@ -133,13 +132,14 @@ function loadPlanetsScene1(){
     planets[0].sphere.add(sprite);
 
     //Main GUI
-    mainGUI = new dat.GUI({autoPlace: true});
+    mainGUI = new dat.GUI();
     planetFolder = mainGUI.addFolder('Current planets');
     planetFolder.open();
+    loadAddPlanetButton();
     loadPlanetListGUI();
     loadTtimeGUI();
     loadConfigurationGUI();
-    loadAddPlanetButton();
+    backAndResetGUI();
 
     return this.scene;
 }

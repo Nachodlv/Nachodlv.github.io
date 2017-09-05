@@ -4,79 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <title>SunBox - Space Simulation</title>
+    <link rel="stylesheet" type="text/css" href="MainCSS.css">
 </head>
-    <body>
-        <script src="js/build/three.js"></script>
-        <script src="js/stats.js"></script>
-        <script src="js/examples/js/utils/ShadowMapViewer.js"></script>
-        <script src="js/examples/js/controls/OrbitControls.js"></script>
-        <script src="js/examples/js/renderers/Projector.js"></script>
-        <script type="text/javascript" src="dat.gui-0.6.5/build/dat.gui.js"></script>
-        <script type="text/javascript" src="Level.js"></script>
-        <script type="text/javascript" src="Planet.js"></script>
-        <script type="text/javascript" src="GUI.js"></script>
-            <script>
-                var renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-                renderer.setClearColor(0x000000);
-
-                var stats = new Stats();
-                stats.showPanel( 0 );
-                document.body.appendChild( stats.dom );
-
-                var scene;
-                var camera;
-                var scene1Loaded = true;
-
-                //For the interactions
-                var raycasterPlanets = new THREE.Raycaster();
-                var animationVelocity=1;
-                var spheresIntersection=[];
-                var planets = [];
-                var G = 6.67408e-29;
-                var velocityConstant = 1;
-                var control;
-                var previousCameraTarget;
-
-                //Configuration
-                var configurationFolder;
-                var trackActivated = true;
-                var trackLength = 10000;
-
-                //Time GUI
-                var timePassed=0;
-
-                //List of planets GUI
-                var mainGUI;
-                var planetFolder;
-                var controllerArray;
-
-                //Add planets
-                var raycasterPlane = new THREE.Raycaster();
-                var addPlanetGUI;
-                var planeAddingIntersect = [];
-                var tempPlanet;
-                var isAdding=false;
-                var angleLine;
-
-                //Load scene 1
-                var level = new Level();
-                scene = level.loadPlanetsScene1();
-                level.sceneInit();
-
-                var render = function () {
-                    stats.begin();
-                    if(scene1Loaded)
-                        level.animateScene();
-                  //  console.log(timePassed);
-                    stats.end();
-                    requestAnimationFrame(render);
-                    renderer.render(scene, camera);
-                };
-
-                render();
-
-            </script>
+    <body background="images/stars.png">
+        <table class="menu">
+            <tr>
+                <th><img class = "SandboxImage" src="images/Logo.png"></th>
+                <th><img class = "SandboxImage" src="images/Logo.png" ></th>
+                <th><img class = "SandboxImage" src="images/Logo.png" ></th>
+            </tr>
+            <tr>
+                <th><form action="PlaceHolder.html"><button class="btn">Sandbox</button></form></th>
+                <th><button class="btn">SolarSystem</button></th>
+                <th><button class="btn">Satelite</button></th>
+            </tr>
+        </table>
     </body>
 </html>
