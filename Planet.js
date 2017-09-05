@@ -81,17 +81,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
 
 function update() {
     if (!this.isSun) {
-        //if it has the camera, it moves it.
-        if (this.hasCamera) {
-            camera.position.x += this.velocity[0];
-            camera.position.y += this.velocity[1];
-            camera.position.z += this.velocity[2];
-
-            //Circle around the planet, only when it has the camera
-            var circleScale = this.sphere.position.distanceTo(camera.position)/20;
-            this.circle.scale.set(circleScale, circleScale, circleScale);
-            this.circle.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
-        }
 
         //creates track
         this.currentFrame++;
@@ -113,6 +102,18 @@ function update() {
         this.sphere.position.y += this.velocity[1];
         this.sphere.position.z += this.velocity[2];
         this.clickableSphere.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
+
+        //if it has the camera, it moves it.
+        if (this.hasCamera) {
+            camera.position.x += this.velocity[0];
+            camera.position.y += this.velocity[1];
+            camera.position.z += this.velocity[2];
+
+            //Circle around the planet, only when it has the camera
+            var circleScale = this.sphere.position.distanceTo(camera.position)/20;
+            this.circle.scale.set(circleScale, circleScale, circleScale);
+            this.circle.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
+        }
     }else{
         this.sphere.position.x = 0;
         this.sphere.position.y = 0;
