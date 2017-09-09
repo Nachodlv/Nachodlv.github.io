@@ -8,7 +8,6 @@ function Level(){
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableKeys = false;
-    controls.addEventListener('change', render);
     controls.maxDistance = 2000000;
     controls.zoomSpeed = 7;
     /*controls.enabled=false;

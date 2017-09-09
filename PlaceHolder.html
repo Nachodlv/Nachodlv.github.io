@@ -15,6 +15,7 @@
 <script type="text/javascript" src="Level.js"></script>
 <script type="text/javascript" src="Planet.js"></script>
 <script type="text/javascript" src="GUI.js"></script>
+<script type="text/javascript" src="AxisXYZ.js"></script>
 <script>
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -64,16 +65,30 @@
     scene = level.loadPlanetsScene1();
     level.sceneInit();
     var scene1Loaded = true;
+    /*scene.add(camera);
+    var axes = new AxesXYZ();*/
 
-    var render = function () {
+    /*var loader123 = new THREE.ObjectLoader();
+     loader123.load( 'models/spaceship/space-shuttle-orbiter.json', function ( obj ) {
+     //var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial() );
+     obj.position.x =0;
+     obj.position.y =0;
+     obj.position.z =-2000;
+     scene.add( obj );
+
+     })*/
+
+    function render() {
         stats.begin();
-        if(scene1Loaded)
+        if(scene1Loaded) {
             level.animateScene();
+            //axes.updateAxis();
+        }
         //  console.log(timePassed);
         stats.end();
-        requestAnimationFrame(render);
         renderer.render(scene, camera);
-    };
+        requestAnimationFrame(render);
+    }
 
     render();
 

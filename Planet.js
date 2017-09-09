@@ -82,6 +82,12 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
 function update() {
     if (!this.isSun) {
 
+        //moves the planet
+        this.sphere.position.x += this.velocity[0];
+        this.sphere.position.y += this.velocity[1];
+        this.sphere.position.z += this.velocity[2];
+        this.clickableSphere.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
+
         //creates track
         this.currentFrame++;
         if(trackActivated && this.currentFrame>this.tracksPerFrame) {
@@ -96,12 +102,6 @@ function update() {
             scene.add(this.track);
             this.currentFrame=0;
         }
-
-        //moves the planet
-        this.sphere.position.x += this.velocity[0];
-        this.sphere.position.y += this.velocity[1];
-        this.sphere.position.z += this.velocity[2];
-        this.clickableSphere.position.set(this.sphere.position.x, this.sphere.position.y, this.sphere.position.z);
 
         //if it has the camera, it moves it.
         if (this.hasCamera) {
@@ -182,6 +182,7 @@ function closeGUI(){
 }
 
 function eraseTrack(){
+    this.vertices = [];
     scene.remove(this.track);
 }
 
@@ -225,6 +226,7 @@ function calculateDistance(planet){
 
 function destroy(){
     scene.remove(this.sphere);
+    scene.remove(this.circle);
     for(var i=0;i<planets.length;i++){
         if(planets[i]===this){
             planets.splice(i,1);
