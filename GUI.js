@@ -24,7 +24,7 @@ function loadAddPlanetButton(){
             planeAddingIntersect[1]=plane2Adding;
         }
     };
-    mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet');
+    mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet (+)');
 }
 
 
