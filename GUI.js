@@ -55,8 +55,11 @@ function loadTtimeGUI() {
             }
         }
     };
+    var timeUnits = ['Seconds', 'Minutes', 'Hours', 'Days'];
+    var timeConfigurationController = timeFolder.add(configVariable, 'timeOptions', timeUnits).name('Time Unit');
+    configVariable.timeOptions = timeUnits[0];
+    timeConfigurationController.updateDisplay();
 
-    var timeConfigurationController = timeFolder.add(configVariable, 'timeOptions', ["Seconds", "Minutes", "Hours", "Days"]).name('Time Unit');
     var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
     timeFolder.add(playButton, 'Play');
     timeFolder.add(stopButton, 'Stop');
@@ -131,7 +134,6 @@ function loadConfigurationGUI() {
         this.trackLength = trackLength;
         this.trackActivated = trackActivated;
         this.timeSpeed = animationVelocity;
-        this.shadows = true;
         this.zoomSpeed = controls.zoomSpeed;
     };
 
@@ -139,7 +141,6 @@ function loadConfigurationGUI() {
     configurationFolder.open();
     var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
     var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
-    var shadowsController = configurationFolder.add(configVariable, 'shadows').name('Shadows');
     var zoomSpeedController = configurationFolder.add(configVariable, 'zoomSpeed',1).name('Zoom Speed');
 
     lengthController.onFinishChange(function(value){
@@ -149,15 +150,6 @@ function loadConfigurationGUI() {
         trackActivated=value;
         for(var i=0;i<planets.length;i++){
             planets[i].eraseTrack();
-        }
-    });
-    shadowsController.onFinishChange(function (value) {
-        for(var i=0;i<planets.length;i++) {
-            if (!planets[i].isSun) {
-                planets[i].sphere.receiveShadow = value;
-                planets[i].sphere.castShadow = value;
-                planets[i].needsUpdate = true;
-            }
         }
     });
     zoomSpeedController.onFinishChange(function (value) {
