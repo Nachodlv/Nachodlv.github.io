@@ -81,7 +81,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
 
 function update() {
     if (!this.isSun) {
-
         //moves the planet
         this.sphere.position.x += this.velocity[0];
         this.sphere.position.y += this.velocity[1];

@@ -92,6 +92,7 @@ function animateScene(){
             planets[i].update();
         }
     }
+    axes.updateAxis();
 }
 //UNITS
 //weight kg
