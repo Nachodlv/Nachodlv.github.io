@@ -100,10 +100,10 @@ function animateScene(){
 //time s
 function loadPlanetsScene1(){
     //PLANETS
-    planets.push(new Planet(1.98855e30, 695.7, 0, 0, 0, "Sun", true));
+    planets.push(new Planet(1.98855e30, 695.7, 0, 0, 0, 0, "Sun", true));
     controls.target = planets[0].sphere.position;
-    planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 15, "Earth", false));
-    planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 0, "Earth-2", false));
+    planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 15, 0,"Earth", false));
+    planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 0, 0,"Earth-2", false));
     planets[0].sphere.castShadow = false;
     planets[0].sphere.receiveShadow = false;
     for (var i = 0; i < planets.length; i++) {
@@ -142,4 +142,26 @@ function loadPlanetsScene1(){
     backAndResetGUI();
 
     return this.scene;
+}
+
+
+function calculateVelocity(initialPosition, angleYZ){
+    var velocity = new THREE.Vector3(0,0,0);
+    //velocity
+    for (var i = 0; i < planets.length; i++) {
+        if (planets[i].isSun) {
+            var hostStar = planets[i];
+        }
+    }
+    var distanceFromSun = calculateDistance(initialPosition, hostStar.sphere.position);
+    var directionFromSun = calculateDistance(initialPosition, hostStar.sphere.position);
+    var totalVelocity = Math.sqrt((this.G*hostStar.mass)/distanceFromSun);
+
+    velocity.z = totalVelocity * (angleYZ/90);
+    velocity.y = totalVelocity-velocity.z;
+    return velocity;
+}
+
+function vectorModule(vector){
+    return Math.pow(Math.pow(vector[0], 2) + Math.pow(vector[1], 2) + Math.pow(vector[2], 2), 1/2);
 }

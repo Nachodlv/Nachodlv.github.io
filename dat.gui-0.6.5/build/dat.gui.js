@@ -2013,10 +2013,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    function onMouseDrag(e) {
-	      var diff = prevY - e.clientY;
+	      /*var diff = prevY - e.clientY;
 	      _this.setValue(_this.getValue() + diff * _this.__impliedStep);
 	
-	      prevY = e.clientY;
+	      prevY = e.clientY;*/
 	    }
 	
 	    function onMouseUp() {
@@ -2454,13 +2454,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function fieldDown(e) {
 	      setSV(e);
 	      // document.body.style.cursor = 'none';
-	      _dom2.default.bind(window, 'mousemove', setSV);
-	      _dom2.default.bind(window, 'mouseup', fieldUpSV);
+	      /*dom2.default.bind(window, 'mousemove', setSV);
+	      _dom2.default.bind(window, 'mouseup', fieldUpSV);*/
 	    }
 	
 	    function fieldUpSV() {
-	      _dom2.default.unbind(window, 'mousemove', setSV);
-	      _dom2.default.unbind(window, 'mouseup', fieldUpSV);
+	      /*_dom2.default.unbind(window, 'mousemove', setSV);
+	      _dom2.default.unbind(window, 'mouseup', fieldUpSV);*/
 	      // document.body.style.cursor = 'default';
 	      onFinish();
 	    }

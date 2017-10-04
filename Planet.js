@@ -1,4 +1,4 @@
-function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
+function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSun, velocity){
     this.mass=mass;
     this.radius=radius;
     this.name = name;
@@ -29,7 +29,6 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     this.tracksPerFrame=2;
     this.currentFrame=0;
     this.tracks = new THREE.Line();
-    this.changeTracksPerFrame = changeTracksPerFrame;
     this.eraseTrack = eraseTrack;
 
     this.destroy = destroy;
@@ -51,23 +50,15 @@ function Planet(mass, radius, xPosition, yPosition, angle, name, isSun){
     //this.gHour = 8.64960768e-22;
     //this.gDays = 4.982174024e-19;
 
-    //velocity
-    if (!this.isSun){
-        for (var i = 0; i < planets.length; i++) {
-            if (planets[i].isSun) {
-                this.hostStar = planets[i];
-            }
-        }
-        var distanceFromSun = this.calculateDistance(this.hostStar);
-        var directionFromSun = this.calculateDistance(this.hostStar);
-        var totalVelocity = Math.sqrt((this.G*this.hostStar.mass)/distanceFromSun);
+    var newVelocity = new THREE.Vector3(0,0,0);
+    if(!this.isSun && velocity === undefined){
+        newVelocity = calculateVelocity(this.sphere.position, angleYZ);
+    }else if(!this.isSun){
+        newVelocity = velocity;
     }
 
-    //var totalVelocity = 0.03; //Mm per second
-    //var totalVelocity = 108; //Mm per hour
-    var zVelocity = totalVelocity * (angle/90);
-    var yVelocity = totalVelocity-zVelocity;
-    this.velocity = [0, yVelocity, zVelocity];
+    this.velocity = [newVelocity.x, newVelocity.y, newVelocity.z];
+    this.changingVelocity = false;
     this.openGUI = openGui;
     this.closeGUI = closeGUI;
     this.radiusGUI=radius;
@@ -132,6 +123,12 @@ function update() {
         this.sphere.scale.x = this.sphere.scale.y = this.sphere.scale.z = this.sphereScale;
         var tempRadius = parseFloat(this.planetModificationGUI.planetRadius);
         var tempMass = parseFloat(this.planetModificationGUI.planetMass);
+
+        if(!this.changingVelocity){
+            this.planetModificationGUI.planetSpeed = vectorModule(this.velocity);
+            this.infoPlanetGUI.updateDisplay();
+        }
+
         if(!isNaN(tempRadius && tempRadius>0)){
             this.radius = tempRadius;
         }else{
@@ -153,6 +150,7 @@ function openGui(){
         this.planetMass = planet.mass.toString();
         this.planetRadius = planet.radius.toString();
         this.planetName = planet.name;
+        this.planetSpeed = vectorModule(planet.velocity);
     };
     var destroyButton = {
         Destroy: function () {
@@ -165,11 +163,25 @@ function openGui(){
     var nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'planetName').name('Name');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'planetMass' , 1 ).name('Mass (kg)');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1) .name('Radius (Mm)');
+    var speedController = this.infoPlanetGUI.add(this.planetModificationGUI, 'planetSpeed', 0.000001).name('Speed');
     this.infoPlanetGUI.add({Destroy: destroyButton.Destroy.bind(this)},'Destroy');
     this.guiOpen=true;
     nameController.onFinishChange(function(value) {
         refreshPlanetListGUI();
     });
+
+    speedController.onFinishChange(function (value) {
+        planet.changingVelocity = true;
+    });
+
+    speedController.onChange(function (value) {
+        console.log("On change: " + value);
+        var currentSpeed = vectorModule(planet.velocity);
+        planet.velocity[0] = planet.velocity[0] * (value/currentSpeed);
+        planet.velocity[1] = planet.velocity[1] * (value/currentSpeed);
+        planet.velocity[2] = planet.velocity[2] * (value/currentSpeed);
+    })
+
 }
 
 function closeGUI(){
@@ -177,6 +189,7 @@ function closeGUI(){
         //this.infoPlanetGUI.hide=true;
         this.infoPlanetGUI.destroy();
         this.guiOpen = false;
+        this.changingVelocity = false;
     }
 }
 
@@ -196,7 +209,7 @@ function applyGravity(planets, index){
 function applyGravityOfOnePlanet(planet){
     var gravity = [];
     var direction = this.calculateDirection(planet);
-    var number = -this.G*(this.mass * planet.mass)/Math.pow(this.calculateDistance(planet), 2); //[G]=((Mm)^3)/(kg*s^2)
+    var number = -this.G*(this.mass * planet.mass)/Math.pow(this.calculateDistance(this.sphere.position, planet.sphere.position), 2); //[G]=((Mm)^3)/(kg*s^2)
     gravity[0] = number * direction[0]/this.mass;
     gravity[1] = number * direction[1]/this.mass;
     gravity[2] = number * direction[2]/this.mass;
@@ -207,18 +220,18 @@ function applyGravityOfOnePlanet(planet){
 
 function calculateDirection(planet){
     var direction=[];
-    var distance = this.calculateDistance(planet);
+    var distance = this.calculateDistance(this.sphere.position, planet.sphere.position);
     direction[0] = (this.sphere.position.x - planet.sphere.position.x)/distance; //normalized
     direction[1] = (this.sphere.position.y - planet.sphere.position.y)/distance; //normalized
     direction[2] = (this.sphere.position.z - planet.sphere.position.z)/distance; //normalized
     return direction;
 }
 
-function calculateDistance(planet){
+function calculateDistance(position1, position2){
     var distance = 0;
-    distance += Math.pow(this.sphere.position.x - planet.sphere.position.x, 2);
-    distance += Math.pow(this.sphere.position.y - planet.sphere.position.y, 2);
-    distance += Math.pow(this.sphere.position.z - planet.sphere.position.z, 2);
+    distance += Math.pow(position1.x - position2.x, 2);
+    distance += Math.pow(position1.y - position2.y, 2);
+    distance += Math.pow(position1.z - position2.z, 2);
     distance = Math.sqrt(distance);
     return distance;
 }
@@ -247,9 +260,6 @@ function looseCamera(){
     scene.remove(this.circle);
 }
 
-function changeTracksPerFrame(value){
-    this.counterForTracks = value*2;
-}
 
 function createCircleAroundPlanet(){
     var spriteMap = new THREE.TextureLoader().load( 'images/Ring.png' );

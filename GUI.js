@@ -69,9 +69,6 @@ function loadTtimeGUI() {
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
-        for(var i=0;i<planets.length();i++){
-            planets[i].changeTracksPerFrame(value);
-        }
     });
 
     timeConfigurationController.onFinishChange(function (value) {
@@ -188,7 +185,7 @@ function loadNewPlanetGUI(){
     var createPlanetButton = {
         CreatePlanet: function () {
             addPlanetGUI.destroy();
-            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angle,planetInfo.name);
+            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angle, 0,planetInfo.name);
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);
