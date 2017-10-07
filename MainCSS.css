@@ -8,7 +8,7 @@
     cursor: pointer; /* Add a pointer cursor on mouse-over */
     /*padding: 15px 15px;*/ /* Add some padding */
     background-color: #2196F3;
-    width: 150px;
+    width: 250px;
     height: 50px;
     font-family: 'Space Mono';
     font-size: 20px;
@@ -16,7 +16,7 @@
 .btn:hover {background: #0b7dda;}
 
 .SandboxImage {
-    width: 25%;
+    width: 50%;
 }
 
 #axisBox  {

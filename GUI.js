@@ -5,30 +5,22 @@ function loadAddPlanetButton(){
                 return;
             }
             isAdding=true;
-            var geometry = new THREE.PlaneGeometry(1e6,1e6,32,32);
-            var geometry2 = new THREE.PlaneGeometry(1e6,300,32,32);
-            var material = new THREE.MeshBasicMaterial( {
-                color: 0x117ab3} );
+            var scale = calculateDistance(planets[0].sphere.position, camera.position);
+            var geometry = new THREE.PlaneGeometry(1e6,10,32,32);
+            var material = new THREE.MeshBasicMaterial({ color: 0xFF0000});
             material.side = THREE.DoubleSide;
-            material.wireframe=true;
-            var material2 = new THREE.MeshBasicMaterial({ color: 0xFF0000});
-            material2.side = THREE.DoubleSide;
-            var planeAdding = new THREE.Mesh( geometry, material );
-            var plane2Adding = new THREE.Mesh(geometry2, material2);
-            planeAdding.position.set(0,0,-500);
-            plane2Adding.position.set(0,0,-500);
-            planeAdding.rotateZ(90);
+            var planeAdding = new THREE.Mesh(geometry, material);
+            planeAdding.scale.set(1,scale*0.001, 1);
+            planeAdding.position.set((1e6)/2,0,-500);
             scene.add(planeAdding);
-            scene.add(plane2Adding);
             planeAddingIntersect[0]=planeAdding;
-            planeAddingIntersect[1]=plane2Adding;
         }
     };
     mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet (+)');
 }
 
 
-function loadTtimeGUI() {
+function loadTimeGUI() {
     var timeFolder = mainGUI.addFolder('Time controller');
     timeFolder.open();
 
@@ -173,23 +165,26 @@ function loadPlanetListGUI(){
     }
 }
 
-function loadNewPlanetGUI(){
+function loadNewPlanetGUI(distanceFromSun){
     var initialRadius = 5;
     var planetInfo = new function () {
         this.name = "New Planet";
         this.mass = 5e24;
         this.radius = initialRadius;
-        this.angle = 0;
+        this.distanceFromSun = distanceFromSun;
+        this.angleZY = 0;
+        this.angleXZ = 0;
     };
     addPlanetGUI = new dat.GUI();
     var createPlanetButton = {
         CreatePlanet: function () {
             addPlanetGUI.destroy();
-            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angle, 0,planetInfo.name);
+            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleZY, 0,planetInfo.name, false);
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);
-            scene.remove(angleLine);
+            scene.remove(angleZYLine);
+            scene.remove(angleXZLine);
             planets[planets.length]=planet;
             refreshPlanetListGUI();
             isAdding=false;
@@ -201,7 +196,7 @@ function loadNewPlanetGUI(){
         Cancel: function () {
             addPlanetGUI.destroy();
             scene.remove(tempPlanet);
-            scene.remove(angleLine);
+            scene.remove(angleZYLine);
             isAdding=false;
             goToPlanet(previousCameraTarget);
         }
@@ -209,7 +204,9 @@ function loadNewPlanetGUI(){
     addPlanetGUI.add(planetInfo,'name').name('Name');
     addPlanetGUI.add(planetInfo,'mass').name('Mass (kg)');
     var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius (Mm)');
-    var angleController = addPlanetGUI.add(planetInfo,'angle',0,90).name('Angle (Degrees)');
+    var angleZYController = addPlanetGUI.add(planetInfo,'angleZY',0,90).name('AngleZY (Degrees)');
+    var angleXZController = addPlanetGUI.add(planetInfo, 'angleXZ',0,180).name('AngleXZ (Degrees)');
+    var distanceFromSunController = addPlanetGUI.add(planetInfo, 'distanceFromSun', planets[0].radius).name('Distance from the Sun(Mm)');
     addPlanetGUI.add(createPlanetButton,'CreatePlanet').name('Create planet');
     addPlanetGUI.add(cancelButton, 'Cancel');
 
@@ -217,19 +214,45 @@ function loadNewPlanetGUI(){
         var scale = value/initialRadius;
         tempPlanet.scale.set(scale,scale,scale);
     });
-    angleController.onFinishChange(function (value) {
-        scene.remove(angleLine);
+    angleZYController.onFinishChange(function (value) {
+        scene.remove(angleZYLine);
         var scale = tempPlanet.position.distanceTo(camera.position)/5;
         var vector3 = new THREE.Vector3(0,0,0);
-        vector3.z = scale * value/90;
-        vector3.y = scale-vector3.z;
+        var valueRadians = value * (Math.PI / 180);
+        vector3.z = scale * Math.pow(Math.sin(valueRadians), 2);
+        vector3.y = scale * Math.pow(Math.cos(valueRadians), 2);
 
         var material = new THREE.LineBasicMaterial({ color: 0xff0000});
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x,tempPlanet.position.y,tempPlanet.position.z));
         geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x + vector3.x, tempPlanet.position.y + vector3.y, tempPlanet.position.z + vector3.z));
-        angleLine = new THREE.Line(geometry, material);
-        scene.add(angleLine);
+        angleZYLine = new THREE.Line(geometry, material);
+        scene.add(angleZYLine);
+    });
+
+    angleXZController.onFinishChange(function (value) {
+        scene.remove(angleXZLine);
+        var scale = tempPlanet.position.distanceTo(camera.position)/5;
+        var vector3 = new THREE.Vector3(0,0,0);
+        var valueRadians = value * (Math.PI / 180);
+        vector3.z = scale * Math.pow(Math.sin(valueRadians), 2);
+        vector3.x = scale * Math.cos(valueRadians);
+
+        var material = new THREE.LineBasicMaterial({ color: 0xff0000});
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x,tempPlanet.position.y,tempPlanet.position.z));
+        geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x + vector3.x, tempPlanet.position.y + vector3.y, tempPlanet.position.z + vector3.z));
+        angleXZLine = new THREE.Line(geometry, material);
+        scene.add(angleXZLine);
+    });
+
+    distanceFromSunController.onChange(function (value) {
+        scene.remove(tempPlanet);
+        scene.remove(angleXZLine);
+        scene.remove(angleZYLine);
+        tempPlanet.position.x = value;
+        scene.add(tempPlanet);
+        controls.update();
     })
 }
 

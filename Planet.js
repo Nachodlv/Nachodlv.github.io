@@ -26,8 +26,6 @@ function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSu
     this.materialTrack = new THREE.LineBasicMaterial({ color: this.colorTrack });
     this.vertices = [];
     this.line = new THREE.Line();
-    this.tracksPerFrame=2;
-    this.currentFrame=0;
     this.tracks = new THREE.Line();
     this.eraseTrack = eraseTrack;
 
@@ -80,7 +78,7 @@ function update() {
 
         //creates track
         this.currentFrame++;
-        if(trackActivated && this.currentFrame>this.tracksPerFrame) {
+        if(trackActivated) {
             var geometryTrack = new THREE.Geometry();
             this.vertices.push(new THREE.Vector3(this.sphere.position.x,this.sphere.position.y,this.sphere.position.z));
             while(this.vertices.length>trackLength){
@@ -90,7 +88,6 @@ function update() {
             scene.remove(this.track);
             this.track = new THREE.Line(geometryTrack, this.materialTrack);
             scene.add(this.track);
-            this.currentFrame=0;
         }
 
         //if it has the camera, it moves it.

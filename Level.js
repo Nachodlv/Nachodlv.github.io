@@ -20,7 +20,7 @@ function goToPlanet(planet){
     previousCameraTarget = planet;
     controls.target = planet.sphere.position;
     planet.targetOfCamera();
-    camera.position.set(planet.sphere.position.x, planet.sphere.position.y, planet.radius);
+    //camera.position.set(planet.sphere.position.x, planet.sphere.position.y, planet.radius);
     controls.update();
 }
 
@@ -72,7 +72,7 @@ function sceneInit() {
             planeAddingIntersect=[];
             controls.target = tempPlanet.position;
             previousCameraTarget.hasCamera=false;
-            loadNewPlanetGUI();
+            loadNewPlanetGUI(planeIntersects[0].point.x);
         }
     }
 
@@ -137,7 +137,7 @@ function loadPlanetsScene1(){
     planetFolder.open();
     loadAddPlanetButton();
     loadPlanetListGUI();
-    loadTtimeGUI();
+    loadTimeGUI();
     loadConfigurationGUI();
     backAndResetGUI();
 
@@ -157,8 +157,12 @@ function calculateVelocity(initialPosition, angleYZ){
     var directionFromSun = calculateDistance(initialPosition, hostStar.sphere.position);
     var totalVelocity = Math.sqrt((this.G*hostStar.mass)/distanceFromSun);
 
-    velocity.z = totalVelocity * (angleYZ/90);
-    velocity.y = totalVelocity-velocity.z;
+    var radiansYZ =  angleYZ * (Math.PI / 180);
+    //var radiansXY = angleXZ * (Math.PI / 180);
+
+    velocity.z = totalVelocity * Math.pow(Math.sin(radiansYZ), 2);
+    velocity.y = totalVelocity* Math.pow(Math.cos(radiansYZ), 2);
+    //velocity.x = totalVelocity * Math.pow(Math.cos(radiansXY), 2);
     return velocity;
 }
 
