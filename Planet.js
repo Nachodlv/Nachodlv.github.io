@@ -1,10 +1,17 @@
-function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSun, velocity){
+function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSun, color, velocity){ //, color
     this.mass=mass;
     this.radius=radius;
     this.name = name;
     var geometry = new THREE.SphereGeometry(radius,100,100);
+
+
+    if (color === undefined){
+        color = Math.random() * 0xffffff;
+    }
+
     var material = new THREE.MeshLambertMaterial( {
-        color: Math.random() * 0xffffff} );
+        color: color} );
+
     this.sphere = new THREE.Mesh( geometry, material );
 
     this.sphere.castShadow=true;
