@@ -174,12 +174,22 @@ function loadNewPlanetGUI(distanceFromSun){
         this.distanceFromSun = distanceFromSun;
         this.angleZY = 0;
         this.angleXZ = 0;
+        this.defaultVelocity = true;
+        this.starterVelocity = vectorModule(calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), this.angleZY));
+        this.initialVelocity = this.starterVelocity.toFixed(3).toString();
     };
     addPlanetGUI = new dat.GUI();
     var createPlanetButton = {
         CreatePlanet: function () {
             addPlanetGUI.destroy();
-            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleZY, 0,planetInfo.name, false);
+            if(planetInfo.defaultVelocity){
+                planetInfo.starterVelocity = calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), planetInfo.angleZY);
+            }else {
+                var velocity = calculateVelocity(new THREE.Vector3(distanceFromSun, 0, 0), planetInfo.angleZY);
+                var scale = planetInfo.initialVelocity/vectorModule(velocity);
+                planetInfo.starterVelocity = new THREE.Vector3(velocity.x *scale, velocity.y*scale, velocity.z*scale);
+            }
+            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleZY, 0,planetInfo.name, false, planetInfo.starterVelocity);
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);
@@ -206,7 +216,9 @@ function loadNewPlanetGUI(distanceFromSun){
     var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius (Mm)');
     var angleZYController = addPlanetGUI.add(planetInfo,'angleZY',0,90).name('AngleZY (Degrees)');
     var angleXZController = addPlanetGUI.add(planetInfo, 'angleXZ',0,180).name('AngleXZ (Degrees)');
-    var distanceFromSunController = addPlanetGUI.add(planetInfo, 'distanceFromSun', planets[0].radius).name('Distance from the Sun(Mm)');
+    var distanceFromSunController = addPlanetGUI.add(planetInfo, 'distanceFromSun', planets[0].radius).name('Position(Mm)');
+    addPlanetGUI.add(planetInfo, 'defaultVelocity').name("Auto-calculate speed");
+    addPlanetGUI.add(planetInfo, 'initialVelocity').name("Speed (M/s)");
     addPlanetGUI.add(createPlanetButton,'CreatePlanet').name('Create planet');
     addPlanetGUI.add(cancelButton, 'Cancel');
 
@@ -251,6 +263,7 @@ function loadNewPlanetGUI(distanceFromSun){
         scene.remove(angleXZLine);
         scene.remove(angleZYLine);
         tempPlanet.position.x = value;
+        planetInfo.distanceFromSun = value;
         scene.add(tempPlanet);
         controls.update();
     })
@@ -263,7 +276,7 @@ function backAndResetGUI(){
             window.location.href = "index.html";
         },
         resetButton: function () {
-            window.location.href = "PlaceHolder.html"
+            window.location.href = "Sandbox.html"
         }
     };
     mainGUI.add(Buttons, 'resetButton').name("Reset");

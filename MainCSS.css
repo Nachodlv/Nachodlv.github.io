@@ -19,6 +19,25 @@
     width: 50%;
 }
 
+#contenedor {
+    margin: 100px;
+    height: 484px;
+    position: relative;
+    color: white;
+    font-family: "Helvetica";
+    font-size:  20px;
+}
+
+#menu2 {
+    bottom: -2pt;
+    position: absolute;
+}
+
+.imagen {
+    width: 30px;
+    border-radius: 5px;
+}
+
 #axisBox  {
     width: 200px;
     height: 200px;

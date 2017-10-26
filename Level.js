@@ -191,5 +191,5 @@ function calculateVelocity(initialPosition, angleYZ){
 }
 
 function vectorModule(vector){
-    return Math.pow(Math.pow(vector[0], 2) + Math.pow(vector[1], 2) + Math.pow(vector[2], 2), 1/2);
+    return Math.pow(Math.pow(vector.x, 2) + Math.pow(vector.y, 2) + Math.pow(vector.z, 2), 1/2);
 }

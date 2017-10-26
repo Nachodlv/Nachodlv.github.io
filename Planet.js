@@ -129,11 +129,11 @@ function update() {
         var tempMass = parseFloat(this.planetModificationGUI.planetMass);
 
         if(!this.changingVelocity){
-            this.planetModificationGUI.planetSpeed = vectorModule(this.velocity);
+            this.planetModificationGUI.planetSpeed = (vectorModule(new THREE.Vector3(this.velocity[0], this.velocity[1], this.velocity[2]))/this.velocityConstant).toFixed(3);
             this.infoPlanetGUI.updateDisplay();
         }
 
-        if(!isNaN(tempRadius && tempRadius>0)){
+        if(!isNaN(tempRadius) && tempRadius>0){
             this.radius = tempRadius;
         }else{
             this.planetModificationGUI.planetRadius = this.radius;
@@ -154,7 +154,7 @@ function openGui(){
         this.planetMass = planet.mass.toString();
         this.planetRadius = planet.radius.toString();
         this.planetName = planet.name;
-        this.planetSpeed = vectorModule(planet.velocity);
+        this.planetSpeed = vectorModule(planet.velocity).toString();
     };
     var destroyButton = {
         Destroy: function () {
@@ -167,7 +167,7 @@ function openGui(){
     var nameController = this.infoPlanetGUI.add(this.planetModificationGUI,'planetName').name('Name');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'planetMass' , 1 ).name('Mass (kg)');
     this.infoPlanetGUI.add(this.planetModificationGUI, 'planetRadius' , 1) .name('Radius (Mm)');
-    var speedController = this.infoPlanetGUI.add(this.planetModificationGUI, 'planetSpeed', 0.000001).name('Speed');
+    var speedController = this.infoPlanetGUI.add(this.planetModificationGUI, 'planetSpeed', 0.000001).name('Speed (M/s)');
     this.infoPlanetGUI.add({Destroy: destroyButton.Destroy.bind(this)},'Destroy');
     this.guiOpen=true;
     nameController.onFinishChange(function(value) {
@@ -179,11 +179,15 @@ function openGui(){
     });
 
     speedController.onChange(function (value) {
-        console.log("On change: " + value);
-        var currentSpeed = vectorModule(planet.velocity);
-        planet.velocity[0] = planet.velocity[0] * (value/currentSpeed);
-        planet.velocity[1] = planet.velocity[1] * (value/currentSpeed);
-        planet.velocity[2] = planet.velocity[2] * (value/currentSpeed);
+        var tempValue = parseFloat(value).toFixed(3);
+        if(!isNaN(tempValue) && tempValue>0){
+            console.log("On change: " + value);
+            var currentSpeed = vectorModule(new THREE.Vector3(planet.velocity[0], planet.velocity[1], planet.velocity[2]));
+            planet.velocity[0] = planet.velocity[0] * (value/currentSpeed);
+            planet.velocity[1] = planet.velocity[1] * (value/currentSpeed);
+            planet.velocity[2] = planet.velocity[2] * (value/currentSpeed);
+        }
+
     })
 
 }
