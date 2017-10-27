@@ -1,4 +1,4 @@
-function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSun, color, velocity){ //, color
+function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color, velocity){ //, color
     this.mass=mass;
     this.radius=radius;
     this.name = name;
@@ -57,7 +57,7 @@ function Planet(mass, radius, xPosition, yPosition, angleYZ, angleXY, name, isSu
 
     var newVelocity = new THREE.Vector3(0,0,0);
     if(!this.isSun && velocity === undefined){
-        newVelocity = calculateVelocity(this.sphere.position, angleYZ);
+        newVelocity = calculateVelocity(this.sphere.position, angleXY);
     }else if(!this.isSun){
         newVelocity = velocity;
     }

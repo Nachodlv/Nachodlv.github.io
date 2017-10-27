@@ -172,10 +172,10 @@ function loadNewPlanetGUI(distanceFromSun){
         this.mass = 5e24;
         this.radius = initialRadius;
         this.distanceFromSun = distanceFromSun;
-        this.angleZY = 0;
-        this.angleXZ = 0;
+        //this.angleZY = 0;
+        this.angleXY = 90;
         this.defaultVelocity = true;
-        this.starterVelocity = vectorModule(calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), this.angleZY));
+        this.starterVelocity = vectorModule(calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), this.angleXY));
         this.initialVelocity = this.starterVelocity.toFixed(3).toString();
     };
     addPlanetGUI = new dat.GUI();
@@ -183,13 +183,13 @@ function loadNewPlanetGUI(distanceFromSun){
         CreatePlanet: function () {
             addPlanetGUI.destroy();
             if(planetInfo.defaultVelocity){
-                planetInfo.starterVelocity = calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), planetInfo.angleZY);
+                planetInfo.starterVelocity = calculateVelocity(new THREE.Vector3(distanceFromSun,0,0), planetInfo.angleXY);
             }else {
-                var velocity = calculateVelocity(new THREE.Vector3(distanceFromSun, 0, 0), planetInfo.angleZY);
+                var velocity = calculateVelocity(new THREE.Vector3(distanceFromSun, 0, 0), planetInfo.angleXY);
                 var scale = planetInfo.initialVelocity/vectorModule(velocity);
                 planetInfo.starterVelocity = new THREE.Vector3(velocity.x *scale, velocity.y*scale, velocity.z*scale);
             }
-            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleZY, 0,planetInfo.name, false, planetInfo.starterVelocity);
+            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleXY,planetInfo.name, false, planetInfo.starterVelocity);
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);
@@ -214,8 +214,8 @@ function loadNewPlanetGUI(distanceFromSun){
     addPlanetGUI.add(planetInfo,'name').name('Name');
     addPlanetGUI.add(planetInfo,'mass').name('Mass (kg)');
     var radiusController = addPlanetGUI.add(planetInfo,'radius').name('Radius (Mm)');
-    var angleZYController = addPlanetGUI.add(planetInfo,'angleZY',0,90).name('AngleZY (Degrees)');
-    var angleXZController = addPlanetGUI.add(planetInfo, 'angleXZ',0,180).name('AngleXZ (Degrees)');
+   // var angleZYController = addPlanetGUI.add(planetInfo,'angleZY',0,90).name('AngleZY (Degrees)');
+    var angleXZController = addPlanetGUI.add(planetInfo, 'angleXY',0,180).name('AngleXY (Degrees)');
     var distanceFromSunController = addPlanetGUI.add(planetInfo, 'distanceFromSun', planets[0].radius).name('Position(Mm)');
     addPlanetGUI.add(planetInfo, 'defaultVelocity').name("Auto-calculate speed");
     addPlanetGUI.add(planetInfo, 'initialVelocity').name("Speed (M/s)");
@@ -226,7 +226,7 @@ function loadNewPlanetGUI(distanceFromSun){
         var scale = value/initialRadius;
         tempPlanet.scale.set(scale,scale,scale);
     });
-    angleZYController.onFinishChange(function (value) {
+    /*angleZYController.onFinishChange(function (value) {
         scene.remove(angleZYLine);
         var scale = tempPlanet.position.distanceTo(camera.position)/5;
         var vector3 = new THREE.Vector3(0,0,0);
@@ -240,14 +240,14 @@ function loadNewPlanetGUI(distanceFromSun){
         geometry.vertices.push(new THREE.Vector3(tempPlanet.position.x + vector3.x, tempPlanet.position.y + vector3.y, tempPlanet.position.z + vector3.z));
         angleZYLine = new THREE.Line(geometry, material);
         scene.add(angleZYLine);
-    });
+    });*/
 
     angleXZController.onFinishChange(function (value) {
         scene.remove(angleXZLine);
         var scale = tempPlanet.position.distanceTo(camera.position)/5;
         var vector3 = new THREE.Vector3(0,0,0);
         var valueRadians = value * (Math.PI / 180);
-        vector3.z = scale * Math.pow(Math.sin(valueRadians), 2);
+        vector3.y = scale * Math.pow(Math.sin(valueRadians), 2);
         vector3.x = scale * Math.cos(valueRadians);
 
         var material = new THREE.LineBasicMaterial({ color: 0xff0000});
