@@ -43,13 +43,15 @@ var isAdding=false;
 var angleZYLine;
 var angleXZLine;
 
-//Load scene 1
+//Load scene
 var level = new Level();
+var levelLoaded = 1;
 
 //Load Axes
 var axes = new AxesXYZ();
 
 function init(levelToLoad){
+    levelLoaded = levelToLoad;
     scene = level.loadPlanetsScene1(levelToLoad);
     level.sceneInit();
     console.log(levelToLoad);

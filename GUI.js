@@ -276,7 +276,18 @@ function backAndResetGUI(){
             window.location.href = "index.html";
         },
         resetButton: function () {
-            window.location.href = "Sandbox.html"
+            switch (levelLoaded){
+                case 1:
+                    window.location.href = "Sandbox.html";
+                    break;
+                case 2:
+                    window.location.href = "SolarSystem.html";
+                    break;
+                default:
+                    console.log("Error in reset button");
+                    break;
+            }
+
         }
     };
     mainGUI.add(Buttons, 'resetButton').name("Reset");
