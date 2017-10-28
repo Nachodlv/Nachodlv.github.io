@@ -10,7 +10,7 @@
     background-color: #2196F3;
     width: 250px;
     height: 50px;
-    font-family: 'Space Mono';
+    font-family: 'Space Mono', serif;
     font-size: 20px;
 }
 .btn:hover {background: #0b7dda;}
@@ -19,22 +19,19 @@
     width: 50%;
 }
 
-#contenedor {
-    margin: 100px;
-    height: 484px;
-    position: relative;
-    color: white;
-    font-family: "Helvetica";
-    font-size:  20px;
-}
-
-#menu2 {
-    bottom: -2pt;
+#container {
     position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 2%;
+    color: white;
+    font-family: "Helvetica", serif;
+    font-size: 20px;
+    text-align: right;
 }
 
-.imagen {
-    width: 30px;
+.ludlabImage {
+    width: 12%;
     border-radius: 5px;
 }
 
