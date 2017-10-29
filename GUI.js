@@ -5,15 +5,23 @@ function loadAddPlanetButton(){
                 return;
             }
             isAdding=true;
-            var scale = calculateDistance(planets[0].sphere.position, camera.position);
-            var geometry = new THREE.PlaneGeometry(1e6,10,32,32);
+            var scale = calculateDistance(planets[0].sphere.position, camera.position) * 0.001;
+            var geometry = new THREE.PlaneGeometry(1e7,10,32,32);
+            var geometry2 = new THREE.PlaneGeometry(1e6, 1e6, 32,32);
             var material = new THREE.MeshBasicMaterial({ color: 0xFF0000});
+            var material2 = new THREE.MeshBasicMaterial();
+            material2.side = THREE.DoubleSide;
+            material2.visible =false;
             material.side = THREE.DoubleSide;
             var planeAdding = new THREE.Mesh(geometry, material);
-            planeAdding.scale.set(1,scale*0.001, 1);
-            planeAdding.position.set((1e6)/2,0,-500);
+            var invisiblePlane = new THREE.Mesh(geometry2, material2);
+            planeAdding.scale.set(1,scale, 1);
+            invisiblePlane.scale.set(scale, scale, 1);
+            planeAdding.position.set((1e7)/2,0,-500);
             scene.add(planeAdding);
+            scene.add(invisiblePlane);
             planeAddingIntersect[0]=planeAdding;
+            planeAddingIntersect[1]=invisiblePlane;
         }
     };
     mainGUI.add(addPlanetButton,'AddPlanet').name('Add planet (+)');
@@ -189,7 +197,7 @@ function loadNewPlanetGUI(distanceFromSun){
                 var scale = planetInfo.initialVelocity/vectorModule(velocity);
                 planetInfo.starterVelocity = new THREE.Vector3(velocity.x *scale, velocity.y*scale, velocity.z*scale);
             }
-            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleXY,planetInfo.name, false, planetInfo.starterVelocity);
+            var planet = new Planet(planetInfo.mass,planetInfo.radius,tempPlanet.position.x,tempPlanet.position.y,planetInfo.angleXY,planetInfo.name, false, undefined, planetInfo.starterVelocity);
             scene.add(planet.sphere);
             scene.add(planet.clickableSphere);
             scene.remove(tempPlanet);

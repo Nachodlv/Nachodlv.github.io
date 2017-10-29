@@ -67,7 +67,7 @@ function sceneInit() {
             var material = new THREE.MeshLambertMaterial( {
                 color: 0x117ab3} );
             tempPlanet = new THREE.Mesh( geometry, material );
-            tempPlanet.position.set(planeIntersects[0].point.x,planeIntersects[0].point.y,planeAddingIntersect[0].position.z);
+            tempPlanet.position.set(planeIntersects[0].point.x,0,0);
             scene.add(tempPlanet);
             scene.remove(planeAddingIntersect[0]);
             scene.remove(planeAddingIntersect[1]);

@@ -7,6 +7,9 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
 
     if (color === undefined){
         color = Math.random() * 0xffffff;
+        this.colorTrack  =  Math.random() * 0xffffff;
+    }else{
+        this.colorTrack = color;
     }
 
     var material = new THREE.MeshLambertMaterial( {
@@ -29,7 +32,7 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
     this.calculateDirection = calculateDirection;
     this.calculateDistance = calculateDistance;
 
-    this.colorTrack  =  Math.random() * 0xffffff;
+
     this.materialTrack = new THREE.LineBasicMaterial({ color: this.colorTrack });
     this.vertices = [];
     this.line = new THREE.Line();
