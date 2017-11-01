@@ -32,6 +32,13 @@ function sceneInit() {
 
     previousCameraTarget = planets[0];
 
+    var skyGeo = new THREE.SphereGeometry(2000000000, 25, 25);
+    var loader = new THREE.TextureLoader(), texture = loader.load("images/skybox.jpg");
+    var skyMaterial = new THREE.MeshBasicMaterial({map: texture}); //Phong
+    var sky = new THREE.Mesh(skyGeo, skyMaterial);
+    sky.material.side = THREE.BackSide;
+    scene.add(sky);
+
     //Prevent using arrow keys and space to scroll the page
     document.addEventListener("keydown", function(e) {
         // space and arrow keys
@@ -111,18 +118,18 @@ function loadPlanetsScene1(number){
     //PLANETS
     switch(number) {
         case 1:
-            planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 90, "Earth", false));
+            planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 90, "Earth", false, 0x6b93d6, 'images/earth.jpg'));
             //planets.push(new Planet(3.43234e23, 4.321, 155821.4, 0, 90, "Earth-2", false));
             break;
         case 2:
-            planets.push(new Planet(3.3011e23, 2.4397, 57909.05, 0, 90, "Mercury", false, 0xe2e2e2)); //, new THREE.Vector3(0, 0.047362, 0)
-            planets.push(new Planet(4.8675e24, 6.0518, 108208, 0, 90, "Venus", false, 0xe39e1c)); //, new THREE.Vector3(0, 0.03502, 0)
-            planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 90, "Earth", false, 0x6b93d6)); //, new THREE.Vector3(0, 0.02978, 0)
-            planets.push(new Planet(6.4171e23, 3.3895, 227939.2, 0, 90, "Mars", false, 0xc1440e)); //, new THREE.Vector3(0, 0.024077, 0)
-            planets.push(new Planet(1.8982e27, 69.911, 778570, 0, 90, "Jupiter", false, 0xd8ca9d)); //, new THREE.Vector3(0, 0.01307, 0)
-            planets.push(new Planet(5.6834e26, 58.232, 1433530, 0, 90, "Saturn", false, 0xead6b8)); //, new THREE.Vector3(0, 0.00968, 0)
-            planets.push(new Planet(8.681e25, 25.362, 2875040, 0, 90, "Uranus", false, 0xd1e7e7)); //, new THREE.Vector3(0, 0, 0)
-            planets.push(new Planet(1.0243e26, 24.622, 4500000, 0, 90, "Neptune", false, 0x3d5ef9)); //, new THREE.Vector3(0, 0, 0)
+            planets.push(new Planet(3.3011e23, 2.4397, 57909.05, 0, 90, "Mercury", false, 0xe2e2e2, undefined, 'images/mercury.jpg')); //, new THREE.Vector3(0, 0.047362, 0)
+            planets.push(new Planet(4.8675e24, 6.0518, 108208, 0, 90, "Venus", false, 0xe39e1c, undefined, 'images/venus.jpg')); //, new THREE.Vector3(0, 0.03502, 0)
+            planets.push(new Planet(5.9722e24, 6.371, 149597.8707, 0, 90, "Earth", false, 0x6b93d6, undefined, 'images/earth.jpg')); //, new THREE.Vector3(0, 0.02978, 0)
+            planets.push(new Planet(6.4171e23, 3.3895, 227939.2, 0, 90, "Mars", false, 0xc1440e, undefined, 'images/mars.jpg')); //, new THREE.Vector3(0, 0.024077, 0)
+            planets.push(new Planet(1.8982e27, 69.911, 778570, 0, 90, "Jupiter", false, 0xd8ca9d, undefined, 'images/jupiter.jpg')); //, new THREE.Vector3(0, 0.01307, 0)
+            planets.push(new Planet(5.6834e26, 58.232, 1433530, 0, 90, "Saturn", false, 0xead6b8, undefined, 'images/saturn.jpg')); //, new THREE.Vector3(0, 0.00968, 0)
+            planets.push(new Planet(8.681e25, 25.362, 2875040, 0, 90, "Uranus", false, 0xd1e7e7, undefined, 'images/uranus.jpg')); //, new THREE.Vector3(0, 0, 0)
+            planets.push(new Planet(1.0243e26, 24.622, 4500000, 0, 90, "Neptune", false, 0x3d5ef9, undefined, 'images/neptune.jpg')); //, new THREE.Vector3(0, 0, 0)
             break;
     }
     /*
@@ -136,7 +143,7 @@ function loadPlanetsScene1(number){
     }
 
     //LIGHT
-    var sunLight = new THREE.PointLight(0xffffff, 3);
+    var sunLight = new THREE.PointLight(0xffffff, 1); //was 3
     sunLight.position.set(0, 0, -500);
     sunLight.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(100, 1, 500, 1000));
     sunLight.shadow.bias = 0.0001;
@@ -145,7 +152,8 @@ function loadPlanetsScene1(number){
     this.scene.add(sunLight);
 
     //SUN GLOW
-    planets[0].sphere.material = new THREE.MeshBasicMaterial({color: 0xffffff}); //0xffd700
+    var loader = new THREE.TextureLoader(), textureLoaded = loader.load("images/sun.jpg");
+    planets[0].sphere.material = new THREE.MeshBasicMaterial({color: 0xffffff, map: textureLoaded}); //color: 0xffffff,
     var spriteMaterial = new THREE.SpriteMaterial(
         {
             map: new THREE.TextureLoader().load('images/glow.png'),

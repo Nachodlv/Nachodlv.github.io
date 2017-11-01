@@ -1,4 +1,4 @@
-function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color, velocity){ //, color
+function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color, velocity, texture){ //, color
     this.mass=mass;
     this.radius=radius;
     this.name = name;
@@ -12,13 +12,19 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
     }
 
     /*var loader = new THREE.TextureLoader();
-    loader.load('images/earth_atmos_2048.jpg', function ( texture ) {
+    loader.load('images/earth.jpg', function ( texture ) {
 
     });*/
 
-    var material = new THREE.MeshLambertMaterial( {
-        map: THREE.ImageUtils.loadTexture('images/earth_atmos_2048.jpg')} );
-    this.sphere = new THREE.Mesh( geometry, material);
+    if (texture === undefined){
+        this.material = new THREE.MeshLambertMaterial( {
+            color: color} );
+    } else {
+        var loader = new THREE.TextureLoader(), textureLoaded = loader.load(texture);
+        this.material = new THREE.MeshLambertMaterial( {
+            map: textureLoaded});
+    }
+    this.sphere = new THREE.Mesh( geometry, this.material);
     this.sphere.rotateOnAxis(new THREE.Vector3(1,0,0), Math.PI/2 );
     this.sphere.castShadow=true;
     this.sphere.receiveShadow=true;
