@@ -4,7 +4,6 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
     this.name = name;
     var geometry = new THREE.SphereGeometry(radius,100,100);
 
-
     if (color === undefined){
         color = Math.random() * 0xffffff;
         this.colorTrack  =  Math.random() * 0xffffff;
@@ -12,11 +11,15 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
         this.colorTrack = color;
     }
 
+    /*var loader = new THREE.TextureLoader();
+    loader.load('images/earth_atmos_2048.jpg', function ( texture ) {
+
+    });*/
+
     var material = new THREE.MeshLambertMaterial( {
-        color: color} );
-
-    this.sphere = new THREE.Mesh( geometry, material );
-
+        map: THREE.ImageUtils.loadTexture('images/earth_atmos_2048.jpg')} );
+    this.sphere = new THREE.Mesh( geometry, material);
+    this.sphere.rotateOnAxis(new THREE.Vector3(1,0,0), Math.PI/2 );
     this.sphere.castShadow=true;
     this.sphere.receiveShadow=true;
     this.sphere.position.set(xPosition,yPosition,-500);
@@ -65,6 +68,7 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
         newVelocity = velocity;
     }
 
+    this.rotationSpeed = 1.08e24; //rotation in radians needed to complete a day on earth in seconds
     this.velocity = [newVelocity.x, newVelocity.y, newVelocity.z];
     this.changingVelocity = false;
     this.openGUI = openGui;
@@ -80,7 +84,7 @@ function Planet(mass, radius, xPosition, yPosition, angleXY, name, isSun, color,
 
 function update() {
     if (!this.isSun) {
-        //moves the planet
+        this.sphere.rotation.y += (this.rotationSpeed / velocityConstant) * G;
         this.sphere.position.x += this.velocity[0];
         this.sphere.position.y += this.velocity[1];
         this.sphere.position.z += this.velocity[2];
