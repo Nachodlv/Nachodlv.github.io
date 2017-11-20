@@ -50,6 +50,8 @@ var levelLoaded = 1;
 //Load Axes
 var axes = new AxesXYZ();
 
+//skybox
+var skybox;
 function init(levelToLoad){
     levelLoaded = levelToLoad;
     scene = level.loadPlanetsScene1(levelToLoad);

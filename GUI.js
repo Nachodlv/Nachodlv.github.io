@@ -48,13 +48,7 @@ function loadTimeGUI() {
 
         }
     };
-    var timePassedButton = {
-        Button: function () {
-            for(var i=0;i<configVariable.customSpeed;i++){
-                level.animateScene();
-            }
-        }
-    };
+
     var timeUnits = ['Seconds', 'Minutes', 'Hours', 'Days'];
     var timeConfigurationController = timeFolder.add(configVariable, 'timeOptions', timeUnits).name('Time Unit');
     configVariable.timeOptions = timeUnits[0];
@@ -63,9 +57,6 @@ function loadTimeGUI() {
     var timeSpeedController = timeFolder.add(configVariable, 'timeSpeed',1).name('Time speed');
     timeFolder.add(playButton, 'Play');
     timeFolder.add(stopButton, 'Stop');
-    var customSpeedController = timeFolder.add(configVariable, 'customSpeed').name('Time passed');
-    timeFolder.add(timePassedButton, 'Button').name('Pass Time');
-    //configVariable.timeOptions = "Seconds";
 
     timeSpeedController.onFinishChange(function (value) {
         animationVelocity=value;
@@ -130,6 +121,7 @@ function loadConfigurationGUI() {
     var configVariable = new function () {
         this.trackLength = trackLength;
         this.trackActivated = trackActivated;
+        this.skyboxActivated = true;
         this.timeSpeed = animationVelocity;
         this.zoomSpeed = controls.zoomSpeed;
     };
@@ -138,6 +130,7 @@ function loadConfigurationGUI() {
     configurationFolder.open();
     var lengthController = configurationFolder.add(configVariable,'trackLength',1).name('Track length');
     var trackActivatedController = configurationFolder.add(configVariable, 'trackActivated').name('Activate track');
+    var skyboxController = configurationFolder.add(configVariable, 'skyboxActivated').name('Skybox');
     var zoomSpeedController = configurationFolder.add(configVariable, 'zoomSpeed',1).name('Zoom Speed');
 
     lengthController.onFinishChange(function(value){
@@ -151,6 +144,13 @@ function loadConfigurationGUI() {
     });
     zoomSpeedController.onFinishChange(function (value) {
         controls.zoomSpeed=value;
+    });
+    skyboxController.onFinishChange(function (value) {
+        if(value){
+            addSkybox();
+        }else{
+            scene.remove(skybox);
+        }
     })
 }
 

@@ -24,6 +24,15 @@ function goToPlanet(planet){
     controls.update();
 }
 
+function addSkybox(){
+    var skyGeo = new THREE.SphereGeometry(2000000000, 25, 25);
+    var loader = new THREE.TextureLoader(), texture = loader.load("images/skybox2.jpg");
+    var skyMaterial = new THREE.MeshBasicMaterial({map: texture}); //Phong
+    skybox = new THREE.Mesh(skyGeo, skyMaterial);
+    skybox.material.side = THREE.BackSide;
+    scene.add(skybox);
+}
+
 function sceneInit() {
     //INTERACTION WITH PLANETS
     var projector = new THREE.Projector();
@@ -32,12 +41,7 @@ function sceneInit() {
 
     previousCameraTarget = planets[0];
 
-    var skyGeo = new THREE.SphereGeometry(2000000000, 25, 25);
-    var loader = new THREE.TextureLoader(), texture = loader.load("images/skybox.jpg");
-    var skyMaterial = new THREE.MeshBasicMaterial({map: texture}); //Phong
-    var sky = new THREE.Mesh(skyGeo, skyMaterial);
-    sky.material.side = THREE.BackSide;
-    scene.add(sky);
+    addSkybox();
 
     //Prevent using arrow keys and space to scroll the page
     document.addEventListener("keydown", function(e) {
