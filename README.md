@@ -19,7 +19,7 @@ Add planet creates a new planet.
 ## Add new planet
 When add planet is clicked in the [Menu](#Menu) a red line will appear.
 
-![](readme-images/Red_line.png)
+![](readme-images/Red_line.PNG)
 
 Click anywhere on the red line to choose the position of the planet to be created. A menu like the one below will appear.
 
