@@ -12,7 +12,7 @@ You can use it [here](https://nachodlv.github.io/)
 # Features
 
 ## Menu
-![](readme-images/menu.PNG)  
+![](readme-images/Menu.PNG)  
 List of the current planets in the simulation. Click on any planet of the list to move to it and see its specifications.  
 Add planet creates a new planet.
 
